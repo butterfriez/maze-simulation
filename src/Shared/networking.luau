@@ -13,7 +13,7 @@ local remotes: Remotes = Remo.createRemotes({
 	sync = Remo.remote(),
 	init = Remo.remote(),
 	startGame = Remo.remote(),
-	gameEnded = Remo.remote,
+	gameEnded = Remo.remote(),
 })
 
 return remotes
