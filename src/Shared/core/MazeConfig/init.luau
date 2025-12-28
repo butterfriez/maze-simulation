@@ -23,4 +23,6 @@ return {
 		["Bidirectional BFS"] = 325,
 		["A* Search"] = 350,
 	},
+
+	mazeSize = 100, -- 100x100
 }
