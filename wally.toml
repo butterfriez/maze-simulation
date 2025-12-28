@@ -14,3 +14,4 @@ t = "osyrisrblx/t@3.1.1"
 
 [dev-dependencies]
 testez = "roblox/testez@0.4.1"
+ui-labs = "pepeeltoro41/ui-labs@2.4.2"
