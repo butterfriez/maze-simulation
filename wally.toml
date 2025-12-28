@@ -11,3 +11,6 @@ CharmSync = "littensy/charm-sync@0.3.0"
 Remo = "littensy/remo@1.5.3"
 DocumentService = "anthony0br/documentservice@1.2.2"
 t = "osyrisrblx/t@3.1.1"
+
+[dev-dependencies]
+testez = "roblox/testez@0.4.1"

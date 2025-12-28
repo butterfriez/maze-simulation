@@ -6,10 +6,16 @@
       "$path": "src/Shared",
       "Packages": {
         "$path": "Packages"
+      },
+      "DevPackages": {
+        "$path": "DevPackages"
       }
     },
     "ServerScriptService": {
-      "$path": "src/Server"
+      "$path": "src/Server",
+      "Tests": {
+        "$path": "tests"
+      }
     },
     "StarterPlayer": {
       "StarterPlayerScripts": {
