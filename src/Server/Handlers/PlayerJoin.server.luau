@@ -7,5 +7,4 @@ Players.PlayerAdded:Connect(function(player)
 	local key = player.Name
 
 	PlayerState.SetPlayerState(key, PlayerState.DefaultPlayerState)
-	print(PlayerState.GetPlayerState(key))
 end)

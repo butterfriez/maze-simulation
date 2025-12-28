@@ -1,0 +1,26 @@
+return {
+	generationAlgorithms = {
+		["Recursive Backtracker"] = 0,
+		["Binary Tree"] = 50,
+		["Sidewinder"] = 75,
+		["Prim's Algorithm"] = 150,
+		["Kruskal's Algorithm"] = 175,
+		["Hunt and Kill"] = 200,
+		["Growing Tree"] = 225,
+		["Aldous-Broder"] = 300,
+		["Wilson's Algorithm"] = 350,
+		["Eller's Algorithm"] = 400,
+	},
+	solvingAlgorithms = {
+		["Wall Follower"] = 0,
+		["Random Mouse"] = 50,
+		["Pledge Algorithm"] = 75,
+		["Trémaux Algorithm"] = 125,
+		["Depth-First Search"] = 150,
+		["Breadth-First Search"] = 200,
+		["Greedy Best-First"] = 275,
+		["Dijkstra"] = 300,
+		["Bidirectional BFS"] = 325,
+		["A* Search"] = 350,
+	},
+}

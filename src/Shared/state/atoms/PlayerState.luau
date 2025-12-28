@@ -14,8 +14,8 @@ local PlayerStatesAtom = charm.atom({}) :: charm.Atom<{ [string]: PlayerState }>
 local DefaultPlayerState: PlayerState = {
 	coins = 0,
 	algorithms = {
-		maze = "",
-		solver = "",
+		maze = "Recursive Backtracker",
+		solver = "Wall Follower",
 	},
 }
 
