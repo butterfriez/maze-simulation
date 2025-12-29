@@ -3,16 +3,11 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local fusion = require(ReplicatedStorage.Packages.fusion)
 local labs = require(ReplicatedStorage.DevPackages:FindFirstChild("ui-labs"))
 
+local PlayerState = require(ReplicatedStorage.state.atoms.PlayerState)
+
 local DebugView = require(script.Parent)
 
-local FAKE_DEBUG_STATES = {
-    coins = 0,
-    algorithms = {
-        maze = "Recursive Backtracker",
-        solver = "Wall Follower",
-    },
-    ingame = false,
-}
+local FAKE_DEBUG_STATES = PlayerState.DefaultPlayerState -- Use default player state to not hardcode values
 
 return labs.CreateFusionStory({
     fusion = fusion,
