@@ -26,7 +26,10 @@ local HUDView = require(UI.view.HUD)
 -- This value should default to `false` and be toggled via some input-sequence or special key.
 local DEBUG_MODE = scope:Value(true) --> Temporarily set to `true` until there is a method to toggle.
 
-scope:Hydrate(PlayerGui) {
+scope:New "ScreenGui" {
+	Name = "Interface [App]",
+	Parent = PlayerGui,
+
 	[fusion.Children] = {
 		-- Mount debug menu as necessary:
 		scope:Computed(function (use)
