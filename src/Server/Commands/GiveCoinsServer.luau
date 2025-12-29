@@ -3,7 +3,7 @@ local Players = game:GetService("Players")
 
 local PlayerState = require(ReplicatedStorage.state.atoms.PlayerState)
 
-return function(context, player, amount)  
+return function(_, player, amount)  
     if player ~= nil and Players:FindFirstChild(player.Name) then
         PlayerState.UpdatePlayerState(player.Name, function(currentState)
             currentState = table.clone(currentState)

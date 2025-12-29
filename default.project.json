@@ -9,9 +9,6 @@
       },
       "DevPackages": {
         "$path": "DevPackages"
-      },
-      "ServerPackages": {
-        "$path": "ServerPackages"
       }
     },
     "ServerScriptService": {
@@ -31,7 +28,10 @@
       }
     },
     "ServerStorage": {
-      "$path": "src/Storage"
+      "$path": "src/Storage",
+      "ServerPackages": {
+        "$path": "ServerPackages"
+      }
     }
   }
 }
