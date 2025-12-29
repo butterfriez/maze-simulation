@@ -8,7 +8,7 @@ local PlayerStateHandlers = require(ReplicatedStorage.state.atoms.PlayerState)
 local scope = fusion:scoped()
 local PlayerState = {}
 
-PlayerState.currentState = scope:Value(PlayerStateHandlers.DefaultPlayerState)
+PlayerState.currentState = scope:Value({})
 
 charm.subscribe(PlayerStateHandlers.PlayerStatesAtom, function(newState)
 	PlayerState.currentState:set(newState)
