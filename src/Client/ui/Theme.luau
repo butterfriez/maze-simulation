@@ -1,5 +1,5 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local fusion = require(ReplicatedStorage.Packages.fusion)
+local Fusion = require(ReplicatedStorage.Packages.Fusion)
 
 local ThemeContainer = script.Parent.themes
 
@@ -8,7 +8,7 @@ export type Theme = types.Theme
 
 local Theme = {}
 
-local scope = fusion:scoped()
+local scope = Fusion:scoped()
 
 Theme.List = {
     Dark = require(ThemeContainer.Dark),

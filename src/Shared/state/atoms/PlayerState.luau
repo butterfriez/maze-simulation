@@ -1,6 +1,6 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local charm = require(ReplicatedStorage.Packages.charm)
+local Charm = require(ReplicatedStorage.Packages.Charm)
 
 export type PlayerState = {
 	coins: number,
@@ -12,7 +12,7 @@ export type PlayerState = {
 	ratColor: Color3
 }
 
-local PlayerStatesAtom = charm.atom({}) :: charm.Atom<{ [string]: PlayerState }>
+local PlayerStatesAtom = Charm.atom({}) :: Charm.Atom<{ [string]: PlayerState }>
 local DefaultPlayerState: PlayerState = {
 	coins = 0,
 	algorithms = {

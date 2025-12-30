@@ -14,8 +14,8 @@ local Player = Players.LocalPlayer :: Player
 local PlayerGui = Player:WaitForChild("PlayerGui")
 
 -- Fusion:
-local fusion = require(ReplicatedStorage.Packages.fusion)
-local scope = fusion:scoped()
+local Fusion = require(ReplicatedStorage.Packages.Fusion)
+local scope = Fusion:scoped()
 
 -- Interface Modules:
 local UI = script.Parent.Parent.ui
@@ -33,7 +33,7 @@ scope:New "ScreenGui" {
 	Name = "Interface [App]",
 	Parent = PlayerGui,
 
-	[fusion.Children] = {
+	[Fusion.Children] = {
 		-- Mount debug menu as necessary:
 		scope:Computed(function (use)
 			return if use(DEBUG_MODE) then DebugView(scope, {

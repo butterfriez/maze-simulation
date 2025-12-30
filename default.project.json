@@ -22,10 +22,7 @@
       }
     },
     "ServerStorage": {
-      "$path": "src/Storage",
-      "ServerPackages": {
-        "$path": "ServerPackages"
-      }
+      "$path": "src/Storage"
     }
   }
 }

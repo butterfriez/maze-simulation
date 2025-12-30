@@ -1,5 +1,5 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Jest = require(ReplicatedStorage.DevPackages.Jest)
+local Jest = require(ReplicatedStorage.Packages.Jest)
 
 local runCLI = Jest.runCLI
 

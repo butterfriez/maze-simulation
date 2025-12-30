@@ -6,12 +6,12 @@
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local fusion = require(ReplicatedStorage.Packages.fusion)
-local Children, Child = fusion.Children, fusion.Child
+local Fusion = require(ReplicatedStorage.Packages.Fusion)
+local Children, Child = Fusion.Children, Fusion.Child
 
-type Fusion = typeof(fusion)
-type Scope<T = Fusion> = fusion.Scope<T>
-type UsedAs<T> = fusion.UsedAs<T>
+type Fusion = typeof(Fusion)
+type Scope<T = Fusion> = Fusion.Scope<T>
+type UsedAs<T> = Fusion.UsedAs<T>
 
 type UnknownTable = {[unknown]: unknown}
 type StackTrace = { depth: number, [unknown]: boolean }

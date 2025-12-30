@@ -1,7 +1,7 @@
 --!strict
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local fusion = require(ReplicatedStorage.Packages.fusion)
+local Fusion = require(ReplicatedStorage.Packages.Fusion)
 
 type ThemeLayout<T> = {
     background: T,
@@ -11,7 +11,7 @@ type ThemeLayout<T> = {
 }
 
 export type Theme = ThemeLayout<Color3>
-export type DynamicTheme = ThemeLayout<fusion.StateObject<Color3>>
+export type DynamicTheme = ThemeLayout<Fusion.StateObject<Color3>>
 
 local PLACEHOLDER_COLOR: Color3 = Color3.new()
 
