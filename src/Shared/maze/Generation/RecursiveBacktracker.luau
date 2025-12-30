@@ -22,7 +22,7 @@ export type NodeMeta = {
 type RecursiveBacktracker = BaseGenerator.BaseGenerator<NodeMeta> & {
 	Generate: (self: _RecursiveBacktracker) -> (),
 	IsComplete: (self: _RecursiveBacktracker) -> boolean,
-	GetMaze: (self: _RecursiveBacktracker) -> {[number]: {[number]: types.Node<NodeMeta>}}
+	GetMaze: (self: _RecursiveBacktracker) -> { [number]: { [number]: types.Node<NodeMeta> } },
 }
 
 type _RecursiveBacktracker = RecursiveBacktracker & {
@@ -43,7 +43,12 @@ function RecursiveBacktracker.new()
 	for i = 1, size do
 		baseMaze[i] = {}
 		for j = 1, size do
-			baseMaze[i][j] = { x = i, y = j, meta = { visited = false }, open = {Up = false, Down = false, Left = false, Right = false} } :: types.Node<NodeMeta>
+			baseMaze[i][j] = {
+				x = i,
+				y = j,
+				meta = { visited = false },
+				open = { Up = false, Down = false, Left = false, Right = false },
+			} :: types.Node<NodeMeta>
 		end
 	end
 
@@ -61,7 +66,7 @@ function RecursiveBacktracker.GetNeighbors(self: _RecursiveBacktracker, x: numbe
 	local neighbors = {}
 	local origin = self._Maze[x][y]
 
-	for _, dir in ipairs(types.Directions) do
+	for _, dir in types.Directions do
 		local nx = origin.x + dir[1]
 		local ny = origin.y + dir[2]
 
