@@ -18,7 +18,7 @@ local fusion = require(ReplicatedStorage.Packages.fusion)
 local scope = fusion:scoped()
 
 -- Interface Modules:
-local UI = script.Parent.ui
+local UI = script.Parent.Parent.ui
 local DebugView = require(UI.view.Debug)
 local HUDView = require(UI.view.HUD)
 

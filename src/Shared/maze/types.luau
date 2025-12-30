@@ -2,6 +2,12 @@ export type Node<meta> = {
 	x: number,
 	y: number,
 	meta: meta,
+	open: {
+		Up: boolean,
+		Down: boolean,
+		Left: boolean,
+		Right: boolean,
+	}
 }
 
 local Directions = {

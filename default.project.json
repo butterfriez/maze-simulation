@@ -9,13 +9,13 @@
       },
       "DevPackages": {
         "$path": "DevPackages"
+      },
+      "tests": {
+        "$path": "tests"
       }
     },
     "ServerScriptService": {
-      "$path": "src/Server",
-      "Tests": {
-        "$path": "tests"
-      }
+      "$path": "src/Server"
     },
     "StarterPlayer": {
       "StarterPlayerScripts": {

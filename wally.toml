@@ -11,9 +11,11 @@ CharmSync = "littensy/charm-sync@0.3.0"
 Remo = "littensy/remo@1.5.3"
 DocumentService = "anthony0br/documentservice@1.2.2"
 t = "osyrisrblx/t@3.1.1"
+promise = "evaera/promise@4.0.0"
 
 [dev-dependencies]
-testez = "roblox/testez@0.4.1"
+Jest = "jsdotlua/jest@3.10.0"
+JestGlobals = "jsdotlua/jest-globals@3.10.0"
 ui-labs = "pepeeltoro41/ui-labs@2.4.2"
 
 [server-dependencies]

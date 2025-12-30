@@ -19,11 +19,21 @@ Players.PlayerAdded:Connect(function(player)
 			maze = data.mazeGenerationAlgorithm,
 			solver = data.mazeSolverAlgorithm,
 		}
+		currentState.ratColor = Color3.fromRGB(data.ratColor.r, data.ratColor.g, data.ratColor.b)
 
 		return currentState -- forgot to return this so it caused me to debug why playerstate wasn't being set for an hour looooooooooool
 	end)
 end)
 
 Players.PlayerRemoving:Connect(function(player)
+	local playerState = PlayerState.GetPlayerState(player.Name)
+
+	DataHandlers.SetPlayerData(player.Name, {
+		coins = playerState.coins,
+		ratColor = { r = playerState.ratColor.R, g = playerState.ratColor.G, b = playerState.ratColor.B },
+		mazeGenerationAlgorithm = playerState.algorithms.maze,
+		mazeSolverAlgorithm = playerState.algorithms.solver,
+	})
+
 	DataHandlers.SavePlayerData(player.Name)
 end)

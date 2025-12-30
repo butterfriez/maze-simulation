@@ -1,10 +1,18 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local MazeConfig = require(ReplicatedStorage.core.MazeConfig)
+local BuildNode = require(ReplicatedStorage.maze.util.BuildNode)
 local BaseGenerator = require(script.Parent.BaseGenerator)
 local types = require(script.Parent.Parent.types)
 
 local size = MazeConfig.mazeSize
+
+local OPPOSITE = {
+	Up = "Down",
+	Down = "Up",
+	Left = "Right",
+	Right = "Left",
+}
 
 export type NodeMeta = {
 	direction: string,
@@ -12,7 +20,9 @@ export type NodeMeta = {
 }
 
 type RecursiveBacktracker = BaseGenerator.BaseGenerator<NodeMeta> & {
-	Build: (self: _RecursiveBacktracker) -> (),
+	Generate: (self: _RecursiveBacktracker) -> (),
+	IsComplete: (self: _RecursiveBacktracker) -> boolean,
+	GetMaze: (self: _RecursiveBacktracker) -> {[number]: {[number]: types.Node<NodeMeta>}}
 }
 
 type _RecursiveBacktracker = RecursiveBacktracker & {
@@ -33,7 +43,7 @@ function RecursiveBacktracker.new()
 	for i = 1, size do
 		baseMaze[i] = {}
 		for j = 1, size do
-			baseMaze[i][j] = { x = i, y = j, meta = { visited = false } } :: types.Node<NodeMeta>
+			baseMaze[i][j] = { x = i, y = j, meta = { visited = false }, open = {Up = false, Down = false, Left = false, Right = false} } :: types.Node<NodeMeta>
 		end
 	end
 
@@ -75,25 +85,25 @@ function RecursiveBacktracker.SetDirection(
 	node1: types.Node<NodeMeta>,
 	node2: types.Node<NodeMeta>
 )
-	local x1, y1 = node1.x, node1.y
-	local x2, y2 = node2.x, node2.y
+	local dx = node2.x - node1.x
+	local dy = node2.y - node1.y
 
-	local dx = x2 - x1
-	local dy = y2 - y1
+	local dir: "Up" | "Down" | "Left" | "Right"
 
-	local dir = "Right"
-
-	if dx == -1 and dy == 0 then
+	if dx == 1 and dy == 0 then
+		dir = "Right"
+	elseif dx == -1 and dy == 0 then
 		dir = "Left"
 	elseif dx == 0 and dy == 1 then
 		dir = "Down"
 	elseif dx == 0 and dy == -1 then
 		dir = "Up"
 	else
-		dir = "None"
+		error("Nodes are not adjacent")
 	end
 
-	node1.meta.direction = dir
+	node1.open[dir] = true
+	node2.open[OPPOSITE[dir]] = true
 end
 
 function RecursiveBacktracker.Generate(self: _RecursiveBacktracker)
@@ -127,9 +137,16 @@ function RecursiveBacktracker.Generate(self: _RecursiveBacktracker)
 	self.Completed = true
 end
 
-function RecursiveBacktracker.BuildMaze(self: _RecursiveBacktracker)
+function RecursiveBacktracker.Build(self: _RecursiveBacktracker)
 	if not self.Completed then
 		warn("Maze is not completed.")
+	end
+
+	for _, row in self._Maze do
+		for _, node in row do
+			BuildNode(node)
+			task.wait()
+		end
 	end
 end
 

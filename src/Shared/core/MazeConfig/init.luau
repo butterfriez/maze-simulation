@@ -24,5 +24,6 @@ return {
 		["A* Search"] = 350,
 	},
 
-	mazeSize = 100, -- 100x100
+	mazeSize = 20, -- 100x100 STUDS
+	nodeSize = 5, -- 5x5 STUDS
 }
