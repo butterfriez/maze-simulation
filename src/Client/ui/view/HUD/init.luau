@@ -14,8 +14,7 @@ type Scope<T> = fusion.Scope<T>
 type UsedAs<T> = fusion.UsedAs<T>
 
 type Props = {
-    Parent: UsedAs<Instance?>?,
-    States: UsedAs<{[string]: any}>
+    Parent: UsedAs<Instance?>?
 }
 
 return function (scope: Scope<Fusion>, props: Props)

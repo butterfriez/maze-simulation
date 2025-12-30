@@ -1,7 +1,7 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local fusion = require(ReplicatedStorage.Packages.fusion)
-local labs = require(ReplicatedStorage.DevPackages:FindFirstChild("ui-labs"))
+local labs = require(ReplicatedStorage.Packages:FindFirstChild("ui-labs"))
 
 local HUDView = require(script.Parent)
 

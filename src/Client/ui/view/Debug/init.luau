@@ -17,14 +17,16 @@ type UnknownTable = {[unknown]: unknown}
 type StackTrace = { depth: number, [unknown]: boolean }
 
 -- TODO: We should probably pull this from the theme
+local DEFAULT_COLOR: Color3 = Color3.new()
 local BACKGROUND_COLOR: Color3 = Color3.new(0.772549, 0.831373, 1)
 local PRIMITIVE_COLOR_MAP: {[string]: Color3} = {
     ["string"] = Color3.new(0.043137, 0.219608, 0.129412),
     ["number"] = Color3.new(0.160784, 0.2, 0.411765),
     ["boolean"] = Color3.new(0.388235, 0.164706, 0.176471)
-} 
+}
 
 local STACK_DEPTH_LIMIT: number = 10
+local ESCAPE_IDENTIFIER: string = "<$ESCAPE$>"
 
 local function Header(scope: Scope, content: string): Instance
     return scope:New "TextLabel" {
@@ -44,6 +46,22 @@ end
 
 local function Primitive(scope: Scope, value: unknown): Instance
     local valueType = typeof(value)
+    
+    local text: string
+    local color = PRIMITIVE_COLOR_MAP[valueType] or DEFAULT_COLOR
+
+    if valueType == "string" then
+        local result, count = (value :: string):gsub(`^{ESCAPE_IDENTIFIER}`, "")
+        if count >= 1 then
+            text = result
+            color = DEFAULT_COLOR
+        else 
+            text = `"{value}"`
+        end
+    else
+        text = tostring(value)
+    end
+
     return scope:New "TextLabel" {
         LayoutOrder = 2,
 
@@ -52,8 +70,8 @@ local function Primitive(scope: Scope, value: unknown): Instance
         
         BackgroundTransparency = 1,
 
-        Text = if valueType == "string" then `"{value}"` else tostring(value),
-        TextColor3 = PRIMITIVE_COLOR_MAP[valueType] or Color3.new(),
+        Text = text,
+        TextColor3 = color,
         TextXAlignment = Enum.TextXAlignment.Left
     }
 end
@@ -78,7 +96,7 @@ end
 
 local function Builder(scope: Scope, name: string, data: unknown, trace: StackTrace?): Instance
     local stack = trace or setmetatable({ depth = 0 }, { __mode = "k" }) :: any
-    if stack.depth >= STACK_DEPTH_LIMIT then return Primitive(scope, "[🛑]") end
+    if stack.depth >= STACK_DEPTH_LIMIT then return Primitive(scope, ESCAPE_IDENTIFIER .. "[🛑]") end
 
     local header = Header(scope, name)
 
@@ -94,7 +112,7 @@ local function Builder(scope: Scope, name: string, data: unknown, trace: StackTr
             end
             body = Collection(scope, children)
         else
-            data = "[🔁]"
+            data = ESCAPE_IDENTIFIER .. "[🔁]"
         end
     end
 
