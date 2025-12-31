@@ -1,6 +1,6 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local JestGlobals = require(ReplicatedStorage.DevPackages.JestGlobals)
-local promise = require(ReplicatedStorage.Packages.promise)
+local JestGlobals = require(ReplicatedStorage.Packages.JestGlobals)
+local Promise = require(ReplicatedStorage.Packages.Promise)
 
 local RecursiveBacktracker = require(ReplicatedStorage.maze.Generation.RecursiveBacktracker)
 local GetPoints = require(ReplicatedStorage.maze.util.GetPoints)
@@ -11,7 +11,7 @@ local expect = JestGlobals.expect
 local Maze = RecursiveBacktracker.new()
 
 it("Gets the furthest node", function()
-	return promise
+	return Promise
 		.new(function(resolve)
 			Maze:Generate()
 			while not Maze:IsComplete() do

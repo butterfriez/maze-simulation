@@ -6,16 +6,15 @@
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local fusion = require(ReplicatedStorage.Packages.fusion)
-local Children = fusion.Children
+local Fusion = require(ReplicatedStorage.Packages.Fusion)
+local Children = Fusion.Children
 
-type Fusion = typeof(fusion)
-type Scope<T> = fusion.Scope<T>
-type UsedAs<T> = fusion.UsedAs<T>
+type Fusion = typeof(Fusion)
+type Scope<T> = Fusion.Scope<T>
+type UsedAs<T> = Fusion.UsedAs<T>
 
 type Props = {
-    Parent: UsedAs<Instance?>?,
-    States: UsedAs<{[string]: any}>
+    Parent: UsedAs<Instance?>?
 }
 
 return function (scope: Scope<Fusion>, props: Props)

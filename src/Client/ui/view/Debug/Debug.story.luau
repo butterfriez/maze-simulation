@@ -1,16 +1,29 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local fusion = require(ReplicatedStorage.Packages.fusion)
-local labs = require(ReplicatedStorage.DevPackages:FindFirstChild("ui-labs"))
-
-local PlayerState = require(ReplicatedStorage.state.atoms.PlayerState)
+local Fusion = require(ReplicatedStorage.Packages.Fusion)
+local UILabs = require(ReplicatedStorage.Packages.UILabs)
 
 local DebugView = require(script.Parent)
 
-local FAKE_DEBUG_STATES = PlayerState.DefaultPlayerState -- Use default player state to not hardcode values
+local FAKE_DEBUG_STATES do
+    local cyclic = {}
+    cyclic.self = cyclic
 
-return labs.CreateFusionStory({
-    fusion = fusion,
+    FAKE_DEBUG_STATES = {
+        coins = 0,
+        name = "Roblox",
+        module = cyclic,
+        set = {
+            A = true,
+            B = true,
+            C = false
+        },
+        array = { { value = BrickColor.Red() }, { value = BrickColor.Yellow() }, { value = BrickColor.Blue() } }
+    }
+end
+
+return UILabs.CreateFusionStory({
+    fusion = Fusion,
 }, function (props)
     DebugView(props.scope, {
         Parent = props.target,

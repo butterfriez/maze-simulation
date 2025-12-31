@@ -1,0 +1,39 @@
+name = "radra/maze_simulation"
+version = "0.1.0"
+license = "MIT"
+
+repository = "https://github.com/butterfriez/maze-simulation"
+private = true
+
+[target]
+environment = "roblox"
+
+[indices]
+default = "https://github.com/pesde-pkg/index"
+
+[wally_indices]
+default = "https://github.com/UpliftGames/wally-index"
+
+[scripts]
+roblox_sync_config_generator = ".pesde/scripts/roblox_sync_config_generator.luau"
+sourcemap_generator = ".pesde/scripts/sourcemap_generator.luau"
+
+[dependencies]
+Fusion = { wally = "elttob/fusion", version = "0.3.0" }
+Charm = { wally = "littensy/charm", version = "0.10.0" }
+CharmSync = { wally = "littensy/charm-sync", version = "0.3.0" }
+Remo = { wally = "littensy/remo", version = "1.5.3" }
+DocumentService = { wally = "anthony0br/documentservice", version = "1.2.2" }
+t = { wally = "osyrisrblx/t", version = "3.1.1" }
+Promise = { wally = "evaera/promise", version = "4.0.0" }
+Cmdr = { wally = "evaera/cmdr", version = "1.12.0" }
+
+[dev_dependencies]
+scripts = { name = "pesde/scripts_rojo", version = "^0.2.0", target = "lune" }
+rojo = { name = "pesde/rojo", version = "^7.5.1", target = "lune" }
+Jest = { wally = "jsdotlua/jest", version = "3.10.0" }
+JestGlobals = { wally = "jsdotlua/jest-globals", version = "3.10.0" }
+UILabs = { name = "pepeeltoro41/ui_labs", version = "2.4.2" }
+
+[engines]
+pesde = "^0.7.0"

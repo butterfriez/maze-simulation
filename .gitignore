@@ -1,10 +1,11 @@
-# Argon
+# Project Sync
 /sourcemap.json
 
-# Wally
-/Packages
-/ServerPackages
-/DevPackages
+# Package Manager (pesde)
+/.pesde
+/roblox_packages
+/luau_packages
+/lune_packages
 
 # Artifacts
 /*.lock
