@@ -1,24 +1,25 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local RecursiveBacktracker = require(ReplicatedStorage.maze.Generation.RecursiveBacktracker)
-local WallFollower = require(ReplicatedStorage.maze.Solvers.WallFollower)
+local BaseGenerator = require(ReplicatedStorage.maze.Generation.BaseGenerator)
+
 return function(_, mazeAlgorithm, mazeSolver)
-	local maze = nil
+	local success, generator: BaseGenerator.BaseGenerator<unknown> =
+		pcall(require, ReplicatedStorage.maze.Generation:FindFirstChild(mazeAlgorithm))
 
-	if mazeAlgorithm == "Recursive Backtracker" then
-		maze = RecursiveBacktracker.new()
-		maze:Generate()
+	if success then
+		generator = generator.new()
+		generator:Generate()
 
-		while maze:IsComplete() == false do
+		while generator:IsComplete() == false do
 			task.wait()
 		end
 
-		maze:Build()
+		generator:Build()
 	end
 
-	local solver = nil
+	local success, solver = pcall(require, ReplicatedStorage.maze.Solvers:FindFirstChild(mazeSolver))
 
-	if mazeSolver == "Wall Follower" then
-		solver = WallFollower.new(maze)
+	if success then
+		solver = solver.new(generator)
 		solver:Solve()
 
 		while solver:IsComplete() == false do
