@@ -111,10 +111,13 @@ function RecursiveBacktracker.SetDirection(
 	node2.open[OPPOSITE[dir]] = true
 end
 
-function RecursiveBacktracker.Generate(self: _RecursiveBacktracker)
+function RecursiveBacktracker.Generate(self: _RecursiveBacktracker, seed: number | nil)
+	seed = seed or DateTime.now().UnixTimestamp
+	local random = Random.new(seed)
+
 	local stack = {}
 
-	local current = self._Maze[math.random(1, MazeConfig.mazeSize)][math.random(1, MazeConfig.mazeSize)]
+	local current = self._Maze[random:NextInteger(1, MazeConfig.mazeSize)][random:NextInteger(1, MazeConfig.mazeSize)]
 	current.meta.visited = true
 	table.insert(stack, current)
 
@@ -122,7 +125,7 @@ function RecursiveBacktracker.Generate(self: _RecursiveBacktracker)
 		local neighbors = self:GetNeighbors(current.x, current.y)
 
 		if #neighbors ~= 0 then
-			local newNode = neighbors[math.random(1, #neighbors)]
+			local newNode = neighbors[random:NextInteger(1, #neighbors)]
 			self:SetDirection(current, newNode)
 			table.insert(stack, current)
 			current = newNode
@@ -140,6 +143,8 @@ function RecursiveBacktracker.Generate(self: _RecursiveBacktracker)
 	end
 
 	self.Completed = true
+
+	return seed
 end
 
 function RecursiveBacktracker.Build(self: _RecursiveBacktracker)
@@ -158,5 +163,7 @@ end
 function RecursiveBacktracker.IsComplete(self: _RecursiveBacktracker)
 	return self.Completed
 end
+
+function RecursiveBacktracker.Destroy(self: _RecursiveBacktracker) end
 
 return RecursiveBacktracker
