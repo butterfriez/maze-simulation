@@ -14,13 +14,13 @@ type Scope<T> = Fusion.Scope<T>
 type UsedAs<T> = Fusion.UsedAs<T>
 
 type Props = {
-    Parent: UsedAs<Instance?>?
+	Parent: UsedAs<Instance?>?,
 }
 
-return function (scope: Scope<Fusion>, props: Props)
-    scope = scope:innerScope()
-    return scope:New "ScreenGui" {
-        Name = "HUD [View]",
-        Parent = props.Parent
-    }
+return function(scope: Scope<Fusion>, props: Props)
+	scope = scope:innerScope()
+	return scope:New("ScreenGui")({
+		Name = "HUD [View]",
+		Parent = props.Parent,
+	})
 end

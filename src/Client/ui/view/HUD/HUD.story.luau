@@ -6,9 +6,9 @@ local UILabs = require(ReplicatedStorage.Packages.UILabs)
 local HUDView = require(script.Parent)
 
 return UILabs.CreateFusionStory({
-    fusion = Fusion,
-}, function (props)
-    HUDView(props.scope, {
-        Parent = props.target
-    })
+	fusion = Fusion,
+}, function(props)
+	HUDView(props.scope, {
+		Parent = props.target,
+	})
 end)

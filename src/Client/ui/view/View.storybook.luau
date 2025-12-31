@@ -1,6 +1,6 @@
 --!strict
 return {
-    name = "View",
-    storyRoots = { script.Parent }, --> Assumed position: `StarterPlayerScripts/ui/view/`
-    groupRoots = false
+	name = "View",
+	storyRoots = { script.Parent }, --> Assumed position: `StarterPlayerScripts/ui/view/`
+	groupRoots = false,
 }

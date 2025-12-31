@@ -1,15 +1,5 @@
-return function (registry)
-    registry:RegisterType("algorithm", registry.Cmdr.Util.MakeEnumType("Algorithm", 
-    {
-	    "Recursive Backtracker",
-	    "Binary Tree",
-	    "Sidewinder",
-	    "Prim's Algorithm",
-	    "Kruskal's Algorithm",
-	    "Hunt and Kill",
-	    "Growing Tree",
-	    "Aldous-Broder",
-	    "Wilson's Algorithm",
-	    "Eller's Algorithm",
-    }))
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local GenTypes = require(ReplicatedStorage.maze.util.GenTypes)
+return function(registry)
+	registry:RegisterType("algorithm", registry.Cmdr.Util.MakeEnumType("Algorithm", GenTypes.GenGenerationType()))
 end

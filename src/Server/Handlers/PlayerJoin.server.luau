@@ -2,8 +2,8 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerStorage = game:GetService("ServerStorage")
 
-local PlayerState = require(ReplicatedStorage.state.atoms.PlayerState)
 local DataHandlers = require(ServerStorage.Data)
+local PlayerState = require(ReplicatedStorage.state.atoms.PlayerState)
 
 Players.PlayerAdded:Connect(function(player)
 	local key = player.Name
@@ -33,6 +33,7 @@ Players.PlayerRemoving:Connect(function(player)
 		ratColor = { r = playerState.ratColor.R, g = playerState.ratColor.G, b = playerState.ratColor.B },
 		mazeGenerationAlgorithm = playerState.algorithms.maze,
 		mazeSolverAlgorithm = playerState.algorithms.solver,
+		uiTheme = playerState.uiTheme,
 	})
 
 	DataHandlers.SavePlayerData(player.Name)

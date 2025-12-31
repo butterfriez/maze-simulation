@@ -13,187 +13,190 @@ type Fusion = typeof(Fusion)
 type Scope<T = Fusion> = Fusion.Scope<T>
 type UsedAs<T> = Fusion.UsedAs<T>
 
-type UnknownTable = {[unknown]: unknown}
+type UnknownTable = { [unknown]: unknown }
 type StackTrace = { depth: number, [unknown]: boolean }
 
 -- TODO: We should probably pull this from the theme
 local DEFAULT_COLOR: Color3 = Color3.new()
 local BACKGROUND_COLOR: Color3 = Color3.new(0.772549, 0.831373, 1)
-local PRIMITIVE_COLOR_MAP: {[string]: Color3} = {
-    ["string"] = Color3.new(0.043137, 0.219608, 0.129412),
-    ["number"] = Color3.new(0.160784, 0.2, 0.411765),
-    ["boolean"] = Color3.new(0.388235, 0.164706, 0.176471)
+local PRIMITIVE_COLOR_MAP: { [string]: Color3 } = {
+	["string"] = Color3.new(0.043137, 0.219608, 0.129412),
+	["number"] = Color3.new(0.160784, 0.2, 0.411765),
+	["boolean"] = Color3.new(0.388235, 0.164706, 0.176471),
 }
 
 local STACK_DEPTH_LIMIT: number = 10
 local ESCAPE_IDENTIFIER: string = "<$ESCAPE$>"
 
 local function Header(scope: Scope, content: string): Instance
-    return scope:New "TextLabel" {
-        LayoutOrder = 1,
+	return scope:New("TextLabel")({
+		LayoutOrder = 1,
 
-        Size = UDim2.fromScale(0.1, 0),
-        AutomaticSize = Enum.AutomaticSize.XY,
-        
-        BackgroundTransparency = 0.75,
-        BackgroundColor3 = BACKGROUND_COLOR,
-        
-        Text = content,
-        TextXAlignment = Enum.TextXAlignment.Left,
-        FontFace = Font.fromEnum(Enum.Font.BuilderSansBold)
-    }
+		Size = UDim2.fromScale(0.1, 0),
+		AutomaticSize = Enum.AutomaticSize.XY,
+
+		BackgroundTransparency = 0.75,
+		BackgroundColor3 = BACKGROUND_COLOR,
+
+		Text = content,
+		TextXAlignment = Enum.TextXAlignment.Left,
+		FontFace = Font.fromEnum(Enum.Font.BuilderSansBold),
+	})
 end
 
 local function Primitive(scope: Scope, value: unknown): Instance
-    local valueType = typeof(value)
-    
-    local text: string
-    local color = PRIMITIVE_COLOR_MAP[valueType] or DEFAULT_COLOR
+	local valueType = typeof(value)
 
-    if valueType == "string" then
-        local result, count = (value :: string):gsub(`^{ESCAPE_IDENTIFIER}`, "")
-        if count >= 1 then
-            text = result
-            color = DEFAULT_COLOR
-        else 
-            text = `"{value}"`
-        end
-    else
-        text = tostring(value)
-    end
+	local text: string
+	local color = PRIMITIVE_COLOR_MAP[valueType] or DEFAULT_COLOR
 
-    return scope:New "TextLabel" {
-        LayoutOrder = 2,
+	if valueType == "string" then
+		local result, count = (value :: string):gsub(`^{ESCAPE_IDENTIFIER}`, "")
+		if count >= 1 then
+			text = result
+			color = DEFAULT_COLOR
+		else
+			text = `"{value}"`
+		end
+	else
+		text = tostring(value)
+	end
 
-        Size = UDim2.fromScale(0, 0),
-        AutomaticSize = Enum.AutomaticSize.XY,
-        
-        BackgroundTransparency = 1,
+	return scope:New("TextLabel")({
+		LayoutOrder = 2,
 
-        Text = text,
-        TextColor3 = color,
-        TextXAlignment = Enum.TextXAlignment.Left
-    }
+		Size = UDim2.fromScale(0, 0),
+		AutomaticSize = Enum.AutomaticSize.XY,
+
+		BackgroundTransparency = 1,
+
+		Text = text,
+		TextColor3 = color,
+		TextXAlignment = Enum.TextXAlignment.Left,
+	})
 end
 
-local function Collection(scope: Scope, children: {Instance}): Instance
-    return scope:New "Frame" {
-        LayoutOrder = 2,
+local function Collection(scope: Scope, children: { Instance }): Instance
+	return scope:New("Frame")({
+		LayoutOrder = 2,
 
-        Size = UDim2.new(1, 0, 0, 10),
-        AutomaticSize = Enum.AutomaticSize.XY,
+		Size = UDim2.new(1, 0, 0, 10),
+		AutomaticSize = Enum.AutomaticSize.XY,
 
-        BackgroundTransparency = 1,
+		BackgroundTransparency = 1,
 
-        [Children] = Child {
-            scope:New "UIListLayout" {
-                Padding = UDim.new(0, 5)
-            },
-            children
-        }
-    }
+		[Children] = Child({
+			scope:New("UIListLayout")({
+				Padding = UDim.new(0, 5),
+			}),
+			children,
+		}),
+	})
 end
 
 local function Builder(scope: Scope, name: string, data: unknown, trace: StackTrace?): Instance
-    local stack = trace or setmetatable({ depth = 0 }, { __mode = "k" }) :: any
-    if stack.depth >= STACK_DEPTH_LIMIT then return Primitive(scope, ESCAPE_IDENTIFIER .. "[🛑]") end
+	local stack = trace or setmetatable({ depth = 0 }, { __mode = "k" }) :: any
+	if stack.depth >= STACK_DEPTH_LIMIT then
+		return Primitive(scope, ESCAPE_IDENTIFIER .. "[🛑]")
+	end
 
-    local header = Header(scope, name)
+	local header = Header(scope, name)
 
-    local body: Instance
-    if typeof(data) == "table" then
-        if not stack[data] then
-            (stack :: StackTrace)[data] = true
+	local body: Instance
+	if typeof(data) == "table" then
+		if not stack[data] then
+			(stack :: StackTrace)[data] = true
 
-            local children: {Instance} = {}
-            for key, value in data :: UnknownTable do
-                local instance = Builder(scope, tostring(key), value, stack)
-                table.insert(children, instance)
-            end
-            body = Collection(scope, children)
-        else
-            data = ESCAPE_IDENTIFIER .. "[🔁]"
-        end
-    end
+			local children: { Instance } = {}
+			for key, value in data :: UnknownTable do
+				local instance = Builder(scope, tostring(key), value, stack)
+				table.insert(children, instance)
+			end
+			body = Collection(scope, children)
+		else
+			data = ESCAPE_IDENTIFIER .. "[🔁]"
+		end
+	end
 
-    if not body then
-        -- I'm just going to assume everything else is some primitive.
-        -- TODO: We do need to handle for Instances though!
-        body = Primitive(scope, data)
-    end
+	if not body then
+		-- I'm just going to assume everything else is some primitive.
+		-- TODO: We do need to handle for Instances though!
+		body = Primitive(scope, data)
+	end
 
-    return scope:New "Frame" {
-        Size = UDim2.new(1, 0, 0, 10),
-        AutomaticSize = Enum.AutomaticSize.XY,
+	return scope:New("Frame")({
+		Size = UDim2.new(1, 0, 0, 10),
+		AutomaticSize = Enum.AutomaticSize.XY,
 
-        BackgroundTransparency = 1,
+		BackgroundTransparency = 1,
 
-        [Children] = {
-            scope:New "UIListLayout" {
-                FillDirection = Enum.FillDirection.Horizontal,
-                Padding = UDim.new(0, 5),
-                SortOrder = Enum.SortOrder.LayoutOrder
-            },
-            header, body
-        }
-    }
+		[Children] = {
+			scope:New("UIListLayout")({
+				FillDirection = Enum.FillDirection.Horizontal,
+				Padding = UDim.new(0, 5),
+				SortOrder = Enum.SortOrder.LayoutOrder,
+			}),
+			header,
+			body,
+		},
+	})
 end
 
 type Props = {
-    Parent: UsedAs<Instance?>?,
-    States: UsedAs<{[string]: unknown}>
+	Parent: UsedAs<Instance?>?,
+	States: UsedAs<{ [string]: unknown }>,
 }
 
-return function (scope: Scope, props: Props)
-    scope = scope:innerScope()
+return function(scope: Scope, props: Props)
+	scope = scope:innerScope()
 
-    local stateRows = scope:ForPairs(props.States, function (_, scope: Scope, key: string, value: unknown)
-        scope = scope:innerScope()
-        return key, Builder(scope, key, value)
-    end)
-    
-    return scope:New "Frame" {
-        Name = "Debug [View]",
-        Parent = props.Parent,
+	local stateRows = scope:ForPairs(props.States, function(_, scope: Scope, key: string, value: unknown)
+		scope = scope:innerScope()
+		return key, Builder(scope, key, value)
+	end)
 
-        Position = UDim2.fromOffset(5, 5),
-        Size = UDim2.fromScale(0.1, 1),
+	return scope:New("Frame")({
+		Name = "Debug [View]",
+		Parent = props.Parent,
 
-        BackgroundTransparency = 1,
+		Position = UDim2.fromOffset(5, 5),
+		Size = UDim2.fromScale(0.1, 1),
 
-        [Children] = {
-            scope:New "UIListLayout" {
-                Padding = UDim.new(0, 5),
-                SortOrder = Enum.SortOrder.LayoutOrder
-            },
-            scope:New "TextLabel" {
-                LayoutOrder = 1,
+		BackgroundTransparency = 1,
 
-                Size = UDim2.new(0.25, 0, 0, 20),
-                AutomaticSize = Enum.AutomaticSize.XY,
+		[Children] = {
+			scope:New("UIListLayout")({
+				Padding = UDim.new(0, 5),
+				SortOrder = Enum.SortOrder.LayoutOrder,
+			}),
+			scope:New("TextLabel")({
+				LayoutOrder = 1,
 
-                BackgroundTransparency = 0.75,
-                BackgroundColor3 = BACKGROUND_COLOR,
+				Size = UDim2.new(0.25, 0, 0, 20),
+				AutomaticSize = Enum.AutomaticSize.XY,
 
-                Text = "[ DEBUG ]",
-                TextXAlignment = Enum.TextXAlignment.Left,
-                FontFace = Font.fromEnum(Enum.Font.BuilderSansBold)
-            },
-            scope:New "Frame" {
-                LayoutOrder = 2,
+				BackgroundTransparency = 0.75,
+				BackgroundColor3 = BACKGROUND_COLOR,
 
-                Position = UDim2.fromOffset(5, 5),
-                Size = UDim2.fromScale(1, 0.5),
+				Text = "[ DEBUG ]",
+				TextXAlignment = Enum.TextXAlignment.Left,
+				FontFace = Font.fromEnum(Enum.Font.BuilderSansBold),
+			}),
+			scope:New("Frame")({
+				LayoutOrder = 2,
 
-                BackgroundTransparency = 1,
+				Position = UDim2.fromOffset(5, 5),
+				Size = UDim2.fromScale(1, 0.5),
 
-                [Children] = Child {
-                    stateRows,
-                    scope:New "UIListLayout" {
-                        Padding = UDim.new(0, 5)
-                    }
-                }
-            }
-        }
-    }
+				BackgroundTransparency = 1,
+
+				[Children] = Child({
+					stateRows,
+					scope:New("UIListLayout")({
+						Padding = UDim.new(0, 5),
+					}),
+				}),
+			}),
+		},
+	})
 end

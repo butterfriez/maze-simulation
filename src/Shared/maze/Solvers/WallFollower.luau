@@ -1,9 +1,9 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local MazeConfig = require(ReplicatedStorage.core.MazeConfig)
-local BaseSolver = require(script.Parent.BaseSolver)
 local BaseGenerator = require(ReplicatedStorage.maze.Generation.BaseGenerator)
-local types = require(ReplicatedStorage.maze.types)
+local BaseSolver = require(script.Parent.BaseSolver)
 local GetPoints = require(ReplicatedStorage.maze.util.GetPoints)
+local MazeConfig = require(ReplicatedStorage.core.MazeConfig)
+local types = require(ReplicatedStorage.maze.types)
 
 type WallFollower = BaseSolver.BaseSolver & {
 	new: (maze: BaseGenerator.BaseGenerator<unknown>) -> WallFollower,

@@ -1,6 +1,6 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Remo = require(ReplicatedStorage.Packages.Remo)
 local CharmSync = require(ReplicatedStorage.Packages.CharmSync)
+local Remo = require(ReplicatedStorage.Packages.Remo)
 
 type Remotes = {
 	sync: Remo.ServerToClient<CharmSync.SyncPayload>,

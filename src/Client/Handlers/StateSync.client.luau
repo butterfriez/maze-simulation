@@ -1,8 +1,8 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local CharmSync = require(ReplicatedStorage.Packages.CharmSync)
-local remotes = require(ReplicatedStorage.networking)
 local atoms = require(ReplicatedStorage.state.atoms)
+local remotes = require(ReplicatedStorage.networking)
 
 local client = CharmSync.client({ atoms = atoms })
 

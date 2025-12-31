@@ -29,19 +29,21 @@ local PlayerState = require(UI.state.PlayerState)
 -- This value should default to `false` and be toggled via some input-sequence or special key.
 local DEBUG_MODE = scope:Value(true) --> Temporarily set to `true` until there is a method to toggle.
 
-scope:New "ScreenGui" {
+scope:New("ScreenGui")({
 	Name = "Interface [App]",
 	Parent = PlayerGui,
 
 	[Fusion.Children] = {
 		-- Mount debug menu as necessary:
-		scope:Computed(function (use)
-			return if use(DEBUG_MODE) then DebugView(scope, {
-				States = PlayerState.currentState
-			}) else nil
+		scope:Computed(function(use)
+			return if use(DEBUG_MODE)
+				then DebugView(scope, {
+					States = PlayerState.currentState,
+				})
+				else nil
 		end),
-		
+
 		-- TODO: Uncomment HUDView when there is an implementation in place.
 		--HUDView(scope, {})
-	}
-}
+	},
+})

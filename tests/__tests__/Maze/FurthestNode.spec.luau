@@ -11,17 +11,14 @@ local expect = JestGlobals.expect
 local Maze = RecursiveBacktracker.new()
 
 it("Gets the furthest node", function()
-	return Promise
-		.new(function(resolve)
-			Maze:Generate()
-			while not Maze:IsComplete() do
-				task.wait()
-			end
+	return Promise.new(function(resolve)
+		Maze:Generate()
+		while not Maze:IsComplete() do
+			task.wait()
+		end
 
-			print(GetPoints(Maze))
-			resolve(GetPoints(Maze))
-		end)
-		:andThen(function(points)
-			expect(points).toBeDefined()
-		end)
+		resolve(GetPoints(Maze))
+	end):andThen(function(points)
+		expect(points).toBeDefined()
+	end)
 end)

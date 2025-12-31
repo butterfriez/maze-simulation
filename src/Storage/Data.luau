@@ -2,8 +2,8 @@ local DataStoreService = game:GetService("DataStoreService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 
-local t = require(ReplicatedStorage.Packages.t)
 local DocumentService = require(ReplicatedStorage.Packages.DocumentService)
+local t = require(ReplicatedStorage.Packages.t)
 
 type SerC3 = {
 	r: number,
@@ -16,6 +16,7 @@ type DataSchema = {
 	mazeGenerationAlgorithm: string,
 	mazeSolverAlgorithm: string,
 	ratColor: SerC3,
+	uiTheme: string,
 }
 
 local DataInterface = {
@@ -27,6 +28,7 @@ local DataInterface = {
 		g = t.number,
 		b = t.number,
 	}),
+	uiTheme = t.string,
 }
 
 local function dataCheck(value: any): DataSchema
@@ -38,6 +40,7 @@ local function dataCheck(value: any): DataSchema
 		mazeGenerationAlgorithm = DataInterface.mazeGenerationAlgorithm(Value.mazeGenerationAlgorithm),
 		mazeSolverAlgorithm = DataInterface.mazeSolverAlgorithm(Value.mazeSolverAlgorithm),
 		ratColor = DataInterface.ratColor(Value.ratColor),
+		uiTheme = DataInterface.uiTheme(Value.uiTheme),
 	}
 end
 
@@ -52,7 +55,16 @@ local store = DocumentService.DocumentStore.new({
 		mazeSolverAlgorithm = "Wall Follower",
 		ratColor = { r = 0, g = 0, b = 0 },
 	},
-	migrations = {},
+	migrations = {
+		{
+			migrate = function(old)
+				old = table.clone(old)
+				old.uiTheme = "Dark"
+				return old
+			end,
+			backwardsCompatible = true,
+		},
+	},
 	lockSessions = true,
 })
 

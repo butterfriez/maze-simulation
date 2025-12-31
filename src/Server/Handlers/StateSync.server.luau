@@ -23,9 +23,11 @@ local function FilterPayload(player: Player, payload: CharmSync.SyncPayload): Ch
 		}
 	end
 
-	data.PlayerStates = payload.data["PlayerStates"] and {
-		[player.Name] = payload.data.PlayerStates[player.Name],
-	} or nil
+	data.PlayerStates = payload.data["PlayerStates"]
+			and {
+				[player.Name] = payload.data.PlayerStates[player.Name],
+			}
+		or nil
 
 	return {
 		type = payload.type,
