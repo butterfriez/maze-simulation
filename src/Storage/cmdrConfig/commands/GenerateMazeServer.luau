@@ -1,5 +1,6 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local BaseGenerator = require(ReplicatedStorage.maze.Generation.BaseGenerator)
+local BuildMaze = require(ReplicatedStorage.maze.util.BuildMaze)
 
 return function(_, mazeAlgorithm)
 	local success, generator: BaseGenerator.BaseGenerator<unknown> =
@@ -13,6 +14,6 @@ return function(_, mazeAlgorithm)
 			task.wait()
 		end
 
-		generator:Build()
+		BuildMaze(generator:GetMaze())
 	end
 end

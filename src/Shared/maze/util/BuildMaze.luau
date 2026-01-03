@@ -1,4 +1,7 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
+
+local BaseGenerator = require(ReplicatedStorage.maze.Generation.BaseGenerator)
 local MazeConfig = require(ReplicatedStorage.core.MazeConfig)
 local types = require(ReplicatedStorage.maze.types)
 
@@ -25,7 +28,7 @@ local DIR_DATA = {
 	},
 }
 
-local function BuildNode<NodeMeta>(node: types.Node<NodeMeta>)
+local function BuildNode(node: types.Node<unknown>, folder: Folder)
 	local cellPos = Vector3.new(node.x * SIZE, 0, node.y * SIZE)
 
 	local base = Instance.new("Part")
@@ -40,9 +43,22 @@ local function BuildNode<NodeMeta>(node: types.Node<NodeMeta>)
 			wall.Anchored = true
 			wall.Size = data.size
 			wall.Position = cellPos + data.offset
-			wall.Parent = workspace
+			wall.Parent = folder
 		end
 	end
 end
 
-return BuildNode
+local function BuildMaze(maze: { [number]: { [number]: types.Node<unknown> } })
+	local folder = Instance.new("Folder")
+	folder.Name = if RunService:IsServer() then "Maze" else "ClientMaze"
+	folder.Parent = workspace
+
+	for _, row in maze do
+		for _, node in row do
+			BuildNode(node, folder)
+			task.wait()
+		end
+	end
+end
+
+return BuildMaze
