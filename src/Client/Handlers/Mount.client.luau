@@ -10,40 +10,49 @@
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
+-- Fusion:
+local Fusion = require(ReplicatedStorage.Packages.Fusion)
+local Children = Fusion.Children
+
+type UsedAs<T> = Fusion.UsedAs<T>
+
+-- References:
+local UI = script.Parent.Parent.ui --> Luau aliases in Roblox when??
 local Player = Players.LocalPlayer :: Player
 local PlayerGui = Player:WaitForChild("PlayerGui")
 
--- Fusion:
-local Fusion = require(ReplicatedStorage.Packages.Fusion)
-local scope = Fusion:scoped()
-
--- Interface Modules:
-local UI = script.Parent.Parent.ui
-local DebugView = require(UI.view.Debug)
-local HUDView = require(UI.view.HUD)
-
--- States:
 local PlayerState = require(UI.state.PlayerState)
+type PlayerState = PlayerState.PlayerState
+
+local scope = Fusion:scoped({
+	Debug = require(UI.view.Debug),
+	Menu = require(UI.view.Menu),
+	HUD = require(UI.view.HUD),
+})
 
 -- TODO: Move declaration. Handled by Charm?
 -- This value should default to `false` and be toggled via some input-sequence or special key.
-local DEBUG_MODE = scope:Value(true) --> Temporarily set to `true` until there is a method to toggle.
+local DEBUG_MODE: UsedAs<boolean> = scope:Value(true :: boolean) --> Temporarily set to `true` until there is a method to toggle.
 
 scope:New("ScreenGui")({
 	Name = "Interface [App]",
 	Parent = PlayerGui,
 
-	[Fusion.Children] = {
+	[Children] = {
 		-- Mount debug menu as necessary:
 		scope:Computed(function(use)
-			return if use(DEBUG_MODE)
-				then DebugView(scope, {
-					States = PlayerState.currentState,
+			local enabled: boolean = use(DEBUG_MODE)
+			return if enabled
+				then scope:Debug({
+					State = PlayerState.current :: UsedAs<{ [string]: unknown }>,
 				})
 				else nil
 		end),
 
-		-- TODO: Uncomment HUDView when there is an implementation in place.
-		--HUDView(scope, {})
+		scope:Computed(function(use)
+			local state: PlayerState.PlayerState = use(PlayerState.current)
+			return if state and state.gameState == "LOBBY" then scope:Menu({}) else nil
+		end),
+		-- TODO: Define some computed for the HUD!
 	},
 })

@@ -7,11 +7,12 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Fusion = require(ReplicatedStorage.Packages.Fusion)
-local Children, Child = Fusion.Children, Fusion.Child
+local Children = Fusion.Children
 
 type Fusion = typeof(Fusion)
 type Scope<T = Fusion> = Fusion.Scope<T>
 type UsedAs<T> = Fusion.UsedAs<T>
+type StateObject<T> = Fusion.UsedAs<T>
 
 type UnknownTable = { [unknown]: unknown }
 type StackTrace = { depth: number, [unknown]: boolean }
@@ -85,12 +86,12 @@ local function Collection(scope: Scope, children: { Instance }): Instance
 
 		BackgroundTransparency = 1,
 
-		[Children] = Child({
+		[Children] = {
 			scope:New("UIListLayout")({
 				Padding = UDim.new(0, 5),
 			}),
 			children,
-		}),
+		},
 	})
 end
 
@@ -144,14 +145,14 @@ end
 
 type Props = {
 	Parent: UsedAs<Instance?>?,
-	States: UsedAs<{ [string]: unknown }>,
+	State: UsedAs<{ [string]: unknown }>,
 }
 
-return function(scope: Scope, props: Props)
-	scope = scope:innerScope()
+return function(scope: Scope, props: Props): Instance
+	scope = scope:innerScope() :: Scope
 
-	local stateRows = scope:ForPairs(props.States, function(_, scope: Scope, key: string, value: unknown)
-		scope = scope:innerScope()
+	local stateRows = scope:ForPairs(props.State, function(_, scope: Scope, key: string, value: unknown)
+		scope = scope:innerScope() :: Scope
 		return key, Builder(scope, key, value)
 	end)
 
@@ -190,12 +191,12 @@ return function(scope: Scope, props: Props)
 
 				BackgroundTransparency = 1,
 
-				[Children] = Child({
+				[Children] = {
 					stateRows,
 					scope:New("UIListLayout")({
 						Padding = UDim.new(0, 5),
 					}),
-				}),
+				},
 			}),
 		},
 	})
