@@ -1,6 +1,6 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local queue = require(script.Parent.queue)
-local signal = require(ReplicatedStorage.Packages.signal)
+local Signal = require(ReplicatedStorage.Packages.Signal)
 
 export type NPCStates = "Idle" | "Walking"
 
@@ -10,8 +10,8 @@ export type CustomNPC = {
 	GetTracksPlaying: (self: _CustomNPC) -> { [string | number]: AnimationTrack },
 	MoveTo: (self: _CustomNPC, pos: Vector3) -> (),
 	SetWalkSpeed: (self: _CustomNPC, walkspeed: number) -> (),
-	MoveToFinished: signal.Signal<()>,
-	StateChanged: signal.Signal<NPCStates>,
+	MoveToFinished: Signal.Signal<()>,
+	StateChanged: Signal.Signal<NPCStates>,
 }
 
 export type _CustomNPC = CustomNPC & {

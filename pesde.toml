@@ -27,7 +27,7 @@ DocumentService = { wally = "anthony0br/documentservice", version = "1.2.2" }
 t = { wally = "osyrisrblx/t", version = "3.1.1" }
 Promise = { wally = "evaera/promise", version = "4.0.0" }
 Cmdr = { wally = "evaera/cmdr", version = "1.12.0" }
-signal = { name = "jiwonz/signal", version = "^0.1.0" }
+Signal = { name = "jiwonz/signal", version = "^0.1.0" }
 
 [dev_dependencies]
 scripts = { name = "pesde/scripts_rojo", version = "^0.2.0", target = "lune" }

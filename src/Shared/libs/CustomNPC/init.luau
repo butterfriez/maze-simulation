@@ -2,7 +2,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 
 local queue = require(script.queue)
-local signal = require(ReplicatedStorage.Packages.signal)
+local Signal = require(ReplicatedStorage.Packages.Signal)
 
 local types = require(script.types)
 
@@ -17,8 +17,8 @@ function NpcClass.new(npc: Model, walkspeed: number)
 	self._walkQueue = queue.new() :: queue.PriorityQueue<Vector3>
 	self._loadedAnimations = {} :: { [string]: AnimationTrack }
 
-	self.MoveToFinished = signal.new()
-	self.StateChanged = signal.new()
+	self.MoveToFinished = Signal.new()
+	self.StateChanged = Signal.new()
 
 	return self
 end
