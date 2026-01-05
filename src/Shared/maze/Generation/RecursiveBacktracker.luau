@@ -2,6 +2,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local BaseGenerator = require(script.Parent.BaseGenerator)
 local MazeConfig = require(ReplicatedStorage.core.MazeConfig)
+local signal = require(ReplicatedStorage.Packages.signal)
 local types = require(script.Parent.Parent.types)
 
 local size = MazeConfig.mazeSize
@@ -18,11 +19,7 @@ export type NodeMeta = {
 	visited: boolean,
 }
 
-type RecursiveBacktracker = BaseGenerator.BaseGenerator<NodeMeta> & {
-	Generate: (self: _RecursiveBacktracker) -> (),
-	IsComplete: (self: _RecursiveBacktracker) -> boolean,
-	GetMaze: (self: _RecursiveBacktracker) -> { [number]: { [number]: types.Node<NodeMeta> } },
-}
+type RecursiveBacktracker = BaseGenerator.BaseGenerator<NodeMeta> & {}
 
 type _RecursiveBacktracker = RecursiveBacktracker & {
 	_Maze: { [number]: { [number]: types.Node<NodeMeta> } },
@@ -53,6 +50,7 @@ function RecursiveBacktracker.new()
 
 	self._Maze = baseMaze
 	self.Completed = false
+	self.OnComplete = signal.new()
 
 	return self
 end
@@ -142,6 +140,7 @@ function RecursiveBacktracker.Generate(self: _RecursiveBacktracker, seed: number
 	end
 
 	self.Completed = true
+	self.OnComplete:fire()
 
 	return seed
 end

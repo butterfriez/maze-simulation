@@ -1,6 +1,7 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local CharmSync = require(ReplicatedStorage.Packages.CharmSync)
 local Remo = require(ReplicatedStorage.Packages.Remo)
+local t = require(ReplicatedStorage.Packages.t)
 local types = require(ReplicatedStorage.maze.types)
 
 type Remotes = {
