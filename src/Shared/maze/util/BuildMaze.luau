@@ -1,7 +1,6 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 
-local BaseGenerator = require(ReplicatedStorage.maze.Generation.BaseGenerator)
 local MazeConfig = require(ReplicatedStorage.core.MazeConfig)
 local types = require(ReplicatedStorage.maze.types)
 
@@ -35,7 +34,7 @@ local function BuildNode(node: types.Node<unknown>, folder: Folder)
 	base.Size = Vector3.new(SIZE, 1, SIZE)
 	base.Position = cellPos + Vector3.new(0, 0.5, 0)
 	base.Anchored = true
-	base.Parent = workspace
+	base.Parent = folder
 
 	for dir, data in pairs(DIR_DATA) do
 		if not node.open[dir] then

@@ -1,11 +1,14 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local BaseGenerator = require(ReplicatedStorage.maze.Generation.BaseGenerator)
+local BaseSolver = require(ReplicatedStorage.maze.Solvers.BaseSolver)
 local MazeConfig = require(ReplicatedStorage.core.MazeConfig)
 local PlayerStateHandlers = require(ReplicatedStorage.state.atoms.PlayerState)
 local networking = require(ReplicatedStorage.networking)
+local types = require(ReplicatedStorage.maze.types)
 
 local PlayerMazes: { [Player]: BaseGenerator.BaseGenerator<unknown> } = {}
+local PlayerPaths: { [Player]: { path: types.Node<unknown>, current: number } } = {}
 
 local function UpdatePlayerGameState(player: Player, newState: "LOBBY" | "GENERATING" | "INGAME" | "ENDED")
 	PlayerStateHandlers.UpdatePlayerState(player.Name, function(state)
@@ -27,13 +30,32 @@ local function GenerateMaze(player: Player)
 
 		UpdatePlayerGameState(player, "GENERATING")
 
-		PlayerMazes[player] = generator:Generate()
+		generator.OnComplete:once(function()
+			PlayerMazes[player] = generator
+		end)
 
-		while generator:IsComplete() == false do
-			task.wait()
-		end
+		generator:Generate()
+	end
+end
 
-		networking.buildMaze:fire(player, generator:GetMaze())
+local function SolveMaze(player: Player)
+	local playerMaze = PlayerMazes[player]
+
+	local solverAlgorithmKey = PlayerStateHandlers.GetPlayerState(player.Name).algorithms.solver
+	local mazeSolver =
+		ReplicatedStorage.maze.Solvers:FindFirstChild(MazeConfig.solvingAlgorithms[solverAlgorithmKey].key)
+
+	if mazeSolver and playerMaze then
+		local solverModule = require(mazeSolver) :: BaseSolver.BaseSolver
+		local solver = solverModule.new(playerMaze)
+		local path = solver:Solve()
+
+		solver.OnComplete:once(function() -- does this even need to be a signal?
+			PlayerPaths[player] = {
+				path = path,
+				current = 1,
+			}
+		end)
 	end
 end
 
@@ -43,7 +65,16 @@ networking.startGame:connect(function(player)
 	if playerState.gameState == "LOBBY" then
 		task.spawn(function()
 			GenerateMaze(player)
+			SolveMaze(player)
 			UpdatePlayerGameState(player, "INGAME")
+			networking.buildMaze:fire(player, PlayerMazes[player]:GetMaze() :: any)
 		end)
 	end
+end)
+
+networking.requestNextPathNode:onRequest(function(player)
+	local currentNode = PlayerPaths[player].path[PlayerPaths[player].current]
+	PlayerPaths[player].current += 1
+
+	return currentNode
 end)
