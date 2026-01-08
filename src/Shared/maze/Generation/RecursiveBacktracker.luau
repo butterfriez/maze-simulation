@@ -2,7 +2,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local BaseGenerator = require(script.Parent.BaseGenerator)
 local MazeConfig = require(ReplicatedStorage.core.MazeConfig)
-local signal = require(ReplicatedStorage.Packages.signal)
+local Signal = require(ReplicatedStorage.Packages.Signal)
 local types = require(script.Parent.Parent.types)
 
 local size = MazeConfig.mazeSize
@@ -50,7 +50,7 @@ function RecursiveBacktracker.new()
 
 	self._Maze = baseMaze
 	self.Completed = false
-	self.OnComplete = signal.new()
+	self.OnComplete = Signal.new()
 
 	return self
 end

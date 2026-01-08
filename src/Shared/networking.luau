@@ -6,10 +6,12 @@ local types = require(ReplicatedStorage.maze.types)
 
 type Remotes = {
 	sync: Remo.ServerToClient<CharmSync.SyncPayload>,
-	init: Remo.ClientToServer<()>,
-	startGame: Remo.ClientToServer<()>,
+	init: Remo.ClientToServer<>,
+	startGame: Remo.ClientToServer<>,
 	gameEnded: Remo.ServerToClient<>,
 	buildMaze: Remo.ServerToClient<{ [number]: { [number]: { types.Node<unknown> } } }>,
+	startPath: Remo.ServerToClient<{ Vector3 }>,
+	foundCheese: Remo.ClientToServer<>,
 }
 
 local remotes: Remotes = Remo.createRemotes({
@@ -18,6 +20,8 @@ local remotes: Remotes = Remo.createRemotes({
 	startGame = Remo.remote(),
 	gameEnded = Remo.remote(),
 	buildMaze = Remo.remote(),
+	startPath = Remo.remote(),
+	foundCheese = Remo.remote(),
 })
 
 return remotes

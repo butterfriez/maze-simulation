@@ -6,6 +6,9 @@
       "$path": "src/Shared",
       "Packages": {
         "$path": "roblox_packages"
+      },
+      "tests": {
+        "$path": "tests"
       }
     },
     "ServerScriptService": {

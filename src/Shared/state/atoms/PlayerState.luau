@@ -8,7 +8,7 @@ export type PlayerState = {
 		maze: string,
 		solver: string,
 	},
-	gameState: "LOBBY" | "INGAME" | "GENERATING" | "ENDED",
+	gameState: "LOBBY" | "INGAME" | "GENERATING" | "SOLVING" | "ENDED",
 	ratColor: Color3,
 	uiTheme: "Light" | "Dark",
 }
