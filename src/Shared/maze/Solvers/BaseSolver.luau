@@ -5,7 +5,7 @@ local types = require(ReplicatedStorage.maze.types)
 
 export type BaseSolver = {
 	new: (maze: BaseGenerator.BaseGenerator<unknown>) -> BaseSolver,
-	Solve: (self: BaseSolver) -> { types.Node<unknown> }, -- path
+	Solve: (self: BaseSolver) -> (),
 	IsComplete: (self: BaseSolver) -> boolean,
 	OnComplete: Signal.Signal<{ types.Node<unknown> }>,
 	Paint: (self: BaseSolver) -> (),
