@@ -6,7 +6,6 @@
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local Children = require(ReplicatedStorage.Packages[".pesde"]["plainsour_lemon@0.4.0-dev.1.4"].lemon.Instances.Children)
 local Fusion = require(ReplicatedStorage.Packages.Fusion)
 local Children = Fusion.Children
 
@@ -17,6 +16,7 @@ type StateObject<T> = Fusion.UsedAs<T>
 
 local Component = script.Parent.Parent.component
 local Button = require(Component.Button)
+local Card = require(Component.Card)
 local Text = require(Component.Text)
 
 type Props = {
@@ -25,6 +25,14 @@ type Props = {
 
 return function(scope: Scope, props: Props): Instance
 	scope = scope:innerScope({}) :: Scope
+
+	local texure = {
+		Asset = "rbxassetid://17259633983",
+		Transparency = 0.75,
+		ScaleType = Enum.ScaleType.Tile,
+		TileSize = UDim2.fromOffset(100, 100),
+	}
+
 	return scope:New "Frame" {
 		Parent = props.Parent,
 
@@ -35,12 +43,13 @@ return function(scope: Scope, props: Props): Instance
 		BackgroundTransparency = 1,
 
 		[Children] = {
-			scope:New "Frame" {
+			Card(scope, {
 				AnchorPoint = Vector2.new(0.5, 1),
 				Position = UDim2.fromScale(0.5, 1),
 				Size = UDim2.fromScale(1, 0.1),
 
-				BackgroundColor3 = Color3.new(1, 0.262745, 0.423529),
+				Texture = texure :: any,
+				Color = Color3.new(1, 0.262745, 0.423529),
 
 				[Children] = {
 					Button(scope, {
@@ -53,6 +62,8 @@ return function(scope: Scope, props: Props): Instance
 							Color = Color3.new(0.760784, 0.2, 0.321569),
 							Ratio = 1,
 						},
+						Texture = texure :: any,
+
 						Corners = UDim.new(0.15),
 						Color = Color3.new(1, 0.262745, 0.423529),
 
@@ -93,7 +104,7 @@ return function(scope: Scope, props: Props): Instance
 						},
 					}),
 				},
-			},
+			}),
 		},
 	}
 end
