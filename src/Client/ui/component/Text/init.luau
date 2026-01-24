@@ -37,8 +37,9 @@ type Props = Object & {
 	-- Dynamic Properties:
 	Text: UsedAs<string>?,
 	TextScaled: UsedAs<boolean>?,
-	Color: UsedAs<Color3>?,
 	Font: UsedAs<Font>,
+	Color: UsedAs<Color3>?,
+	Transparency: UsedAs<number>?,
 }
 
 -- Component | Constructor:
@@ -47,6 +48,7 @@ return function(scope: Scope, props: Props)
 
 	local children = props[Children]
 	local color = props.Color or DEFAULT_COLOR
+	local transparency = props.Transparency
 
 	local shadow = props.Shadow
 	if shadow then
@@ -61,6 +63,7 @@ return function(scope: Scope, props: Props)
 			Text = props.Text,
 			TextScaled = props.TextScaled,
 			TextColor3 = color,
+			TextTransparency = transparency,
 
 			FontFace = props.Font,
 
@@ -68,10 +71,14 @@ return function(scope: Scope, props: Props)
 		}
 		classname = "TextLabel" --> Ensure static text for the shadow
 		color = Shadow.Color(scope, shadow, color)
+		transparency = shadow.Transparency or transparency
 	end
 
 	local instance = scope:New(classname) {
 		Parent = props.Parent,
+
+		Zindex = props.ZIndex,
+		LayoutOrder = props.LayoutOrder,
 
 		AnchorPoint = props.AnchorPoint,
 		Position = props.Position,
@@ -82,6 +89,7 @@ return function(scope: Scope, props: Props)
 		Text = props.Text,
 		TextScaled = props.TextScaled,
 		TextColor3 = color,
+		TextTransparency = transparency,
 
 		FontFace = props.Font,
 
