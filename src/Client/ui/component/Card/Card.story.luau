@@ -12,15 +12,15 @@ type Scope<T = Fusion> = Fusion.Scope<T>
 
 local Component = require(script.Parent)
 
-local STORY_CONTROLS = {
-	-- Shadow Properties:
-	["Shadow: Offset (X)"] = UILabs.Slider(-5, -100, 100),
-	["Shadow: Offset (Y)"] = UILabs.Slider(-5, -100, 100),
-	["Shadow: Ratio"] = UILabs.Slider(0.5, 0, 1),
+local Types = script.Parent.Parent.Parent.types
+local Shadow = require(Types.Shadow)
+local Texture = require(Types.Texture)
 
+local STORY_CONTROLS = Shadow.Story.Controls(Texture.Story.Controls({
 	Corners = UILabs.Slider(0, 0, 1),
 	Color = Color3.new(1, 1, 1),
-}
+	Transparency = UILabs.Slider(0, 0, 1),
+}))
 type Controls = typeof(STORY_CONTROLS)
 
 return UILabs.CreateFusionStory({
@@ -30,9 +30,8 @@ return UILabs.CreateFusionStory({
 	local scope = props.scope :: Scope
 	local controls = props.controls :: Controls
 
-	local offset = scope:Computed(function(use: any)
-		return UDim2.fromOffset(use(controls["Shadow: Offset (X)"]), use(controls["Shadow: Offset (Y)"]))
-	end)
+	local shadow = Shadow.Story.Properties(scope, controls)
+	local texture = Texture.Story.Properties(scope, controls)
 	local corners = scope:Computed(function(use: any)
 		return UDim.new(use(controls.Corners))
 	end)
@@ -48,6 +47,7 @@ return UILabs.CreateFusionStory({
 
 		[Children] = {
 			scope:New "UIGridLayout" {
+				SortOrder = Enum.SortOrder.LayoutOrder,
 				FillDirection = Enum.FillDirection.Horizontal,
 				FillDirectionMaxCells = 2,
 
@@ -57,54 +57,66 @@ return UILabs.CreateFusionStory({
 
 			Component(props.scope, {
 				Parent = props.target,
+				LayoutOrder = 1,
 
 				Color = controls.Color,
-				Shadow = { Offset = offset, Ratio = controls["Shadow: Ratio"] :: any },
+				Transparency = controls.Transparency :: any,
+
+				Shadow = shadow,
+				Texture = texture,
 				Corners = corners,
 
 				[Children] = scope:New "TextLabel" {
 					Size = UDim2.fromScale(1, 1),
 					BackgroundTransparency = 1,
-					Text = "INTERACTABLE = DISABLED\nSHADOW = ENABLED",
+					Text = "SHADOW = ENABLED\nTEXTURE = ENABLED",
 				},
 			}),
 			Component(props.scope, {
 				Parent = props.target,
+				LayoutOrder = 2,
 
 				Color = controls.Color,
+				Transparency = controls.Transparency :: any,
+
+				Texture = texture,
 				Corners = corners,
 
 				[Children] = scope:New "TextLabel" {
 					Size = UDim2.fromScale(1, 1),
 					BackgroundTransparency = 1,
-					Text = "INTERACTABLE = DISABLED\nSHADOW = DISABLED",
+					Text = "SHADOW = DISABLED\nTEXTURE = ENABLED",
 				},
 			}),
 			Component(props.scope, {
-				__iteractable = true,
 				Parent = props.target,
+				LayoutOrder = 3,
 
 				Color = controls.Color,
-				Shadow = { Offset = offset, Ratio = controls["Shadow: Ratio"] :: any },
+				Transparency = controls.Transparency :: any,
+
+				Shadow = shadow,
 				Corners = corners,
 
 				[Children] = scope:New "TextLabel" {
 					Size = UDim2.fromScale(1, 1),
 					BackgroundTransparency = 1,
-					Text = "INTERACTABLE = ENABLED\nSHADOW = ENABLED",
+					Text = "SHADOW = ENABLED\nTEXTURE = DISABLED",
 				},
 			}),
 			Component(props.scope, {
-				__iteractable = true,
 				Parent = props.target,
+				LayoutOrder = 4,
 
 				Color = controls.Color,
+				Transparency = controls.Transparency :: any,
+
 				Corners = corners,
 
 				[Children] = scope:New "TextLabel" {
 					Size = UDim2.fromScale(1, 1),
 					BackgroundTransparency = 1,
-					Text = "INTERACTABLE = ENABLED\nSHADOW = DISABLED",
+					Text = "SHADOW = DISABLED\nTEXTURE = DISABLED",
 				},
 			}),
 		},

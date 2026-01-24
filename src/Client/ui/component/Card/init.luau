@@ -9,7 +9,6 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 -- Constants:
 local DEFAULT_COLOR: Color3 = Color3.new(1, 1, 1) --> TODO: Pull from theme?
-local DEFAULT_SHADOW_RATIO: number = 0.25
 
 -- Fusion | Definitons:
 local Fusion = require(ReplicatedStorage.Packages.Fusion)
@@ -31,6 +30,9 @@ type Object = Roblox.GuiObject
 local Shadow = require(Types.Shadow)
 type Shadow = Shadow.Shadow
 
+local Texture = require(Types.Texture)
+type Texture = Texture.Texture
+
 -- Helper Components:
 local function Corners(scope: Scope, size: UsedAs<UDim>?): UICorner?
 	if not size then return nil end
@@ -45,10 +47,12 @@ export type Props = Object & {
 
 	-- Custom | Static Properties:
 	Shadow: Shadow?,
+	Texture: Texture?,
 
 	-- Custom | Dynamic Properties:
 	Corners: UsedAs<UDim>?,
 	Color: UsedAs<Color3>?,
+	Transparency: UsedAs<number>?,
 }
 
 -- Component | Constructor:
@@ -57,34 +61,46 @@ return function(scope: Scope, props: Props)
 
 	local children = props[Children]
 	local color: UsedAs<Color3> = props.Color or DEFAULT_COLOR
+	local transparency = props.Transparency
+
+	local texture, classname = Texture.Resolve(props.Texture)
 
 	local shadow = props.Shadow
 	if shadow then
 		local position = Shadow.Position(scope, shadow, UDim2.fromScale(0.5, 0.5))
-
-		children = scope:New "Frame" {
+		children = scope:New(classname)(Texture.Apply(texture, {
 			AnchorPoint = Vector2.new(0.5, 0.5),
 			Position = position,
 			Size = UDim2.fromScale(1, 1),
 
+			BackgroundTransparency = transparency,
 			BackgroundColor3 = color,
 
 			[Children] = { props[Children], Corners(scope, props.Corners) },
-		}
+		}) :: any)
+
+		-- Overwrite values for shadow:
 		color = Shadow.Color(scope, shadow, color)
+		transparency = shadow.Transparency or transparency
+		classname = "Frame"
+		texture = Texture.Empty
 	end
 
-	local instance = scope:New "Frame" {
+	local instance = scope:New(classname)(Texture.Apply(texture, {
 		Parent = props.Parent,
+
+		ZIndex = props.ZIndex,
+		LayoutOrder = props.LayoutOrder,
 
 		AnchorPoint = props.AnchorPoint,
 		Position = props.Position,
 		Size = props.Size,
 
+		BackgroundTransparency = transparency,
 		BackgroundColor3 = color,
 
 		[Children] = { children, Corners(scope, props.Corners) },
-	}
+	}) :: any)
 
 	-- Populate external reference:
 	if props.__ref then
