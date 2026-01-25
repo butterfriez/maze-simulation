@@ -22,7 +22,7 @@ type Child = Fusion.Child
 type Value<T> = Fusion.Value<T>
 
 -- Interface Types:
-local Types = script.Parent.Parent.types
+local Types = script.Parent.Parent.Parent.types
 
 local Roblox = require(Types.Roblox)
 type Object = Roblox.GuiObject

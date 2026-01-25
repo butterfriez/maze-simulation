@@ -11,7 +11,7 @@ type Fusion = typeof(Fusion)
 type Scope<T = Fusion> = Fusion.Scope
 
 local Component = require(script.Parent)
-local Shadow = require(script.Parent.Parent.Parent.types.Shadow)
+local Shadow = require(script.Parent.Parent.Parent.Parent.types.Shadow)
 
 local STORY_CONTROLS = Shadow.Story.Controls {
 	-- Text Controls:
@@ -20,15 +20,14 @@ local STORY_CONTROLS = Shadow.Story.Controls {
 	Font = UILabs.EnumList({
 		BuilderSans = Font.fromEnum(Enum.Font.BuilderSans),
 		Cartoon = Font.fromEnum(Enum.Font.Cartoon),
+		Merriweather = Font.fromEnum(Enum.Font.Merriweather),
+		LuckiestGuy = Font.fromEnum(Enum.Font.LuckiestGuy),
+		FredokaOne = Font.fromEnum(Enum.Font.FredokaOne),
+		Bangers = Font.fromEnum(Enum.Font.Bangers),
+		Arcade = Font.fromEnum(Enum.Font.Arcade),
 	}, "BuilderSans"),
 	Color = Color3.new(1, 1, 1),
 	Transparency = UILabs.Slider(0, 0, 1),
-
-	-- Shadow Controls:
-	["Shadow: Offset (X)"] = UILabs.Slider(-2.5, -100, 100),
-	["Shadow: Offset (Y)"] = UILabs.Slider(-2.5, -100, 100),
-	["Shadow: Ratio"] = UILabs.Slider(0.5, 0, 1),
-	["Shadow: Transparency"] = UILabs.Slider(0, 0, 1),
 }
 type Controls = typeof(STORY_CONTROLS)
 

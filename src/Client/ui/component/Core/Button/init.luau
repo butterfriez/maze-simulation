@@ -40,9 +40,10 @@ return function(scope: Scope, props: Props)
 		if typeof(shadow.Offset) == "UDim2" then
 			offset = scope:Value(shadow.Offset) :: Value<UDim2>
 		else
+			local supplied = shadow.Offset
 			offset = scope:Value(ZERO_UDIM2) :: Value<UDim2>
-			scope:Observer(shadow.Offset):onBind(function()
-				local value = peek(shadow.Offset :: any) :: UDim2
+			scope:Observer(supplied):onBind(function()
+				local value = peek(supplied :: any) :: UDim2
 				offset:set(value)
 			end)
 		end
@@ -71,6 +72,7 @@ return function(scope: Scope, props: Props)
 			if not (shadow and preserved.Offset) then return end
 			offset:set(preserved.Offset :: UDim2)
 			preserved.Offset = nil
+			if props.Activated then props.Activated(card :: GuiObject) end
 		end)
 		scope:insert(began, ended)
 	end)

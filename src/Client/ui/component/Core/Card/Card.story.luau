@@ -12,7 +12,7 @@ type Scope<T = Fusion> = Fusion.Scope<T>
 
 local Component = require(script.Parent)
 
-local Types = script.Parent.Parent.Parent.types
+local Types = script.Parent.Parent.Parent.Parent.types
 local Shadow = require(Types.Shadow)
 local Texture = require(Types.Texture)
 

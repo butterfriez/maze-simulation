@@ -11,8 +11,10 @@ type Scope<T = Fusion> = Fusion.Scope<T>
 
 local Component = require(script.Parent)
 
-local STORY_CONTROLS = {
-	["Shadow: Ratio"] = UILabs.Slider(0.5, 0, 1),
+local Types = script.Parent.Parent.Parent.Parent.types
+local Shadow = require(Types.Shadow)
+
+local STORY_CONTROLS = Shadow.Story.Controls {
 	Color = Color3.new(1, 1, 1),
 	Corners = UILabs.Slider(0.05, 0, 1),
 }
@@ -25,6 +27,7 @@ return UILabs.CreateFusionStory({
 	local scope = props.scope :: Scope
 	local controls = props.controls :: Controls
 
+	local shadow = Shadow.Story.Properties(scope, controls)
 	local corners = scope:Computed(function(use: any)
 		return UDim.new(use(controls.Corners))
 	end)
@@ -37,12 +40,9 @@ return UILabs.CreateFusionStory({
 		Size = UDim2.fromScale(0.25, 0.25),
 
 		Color = controls.Color,
-		Shadow = {
-			Offset = UDim2.fromScale(-0.02, -0.04),
-			Ratio = controls["Shadow: Ratio"] :: any,
-		},
+		Shadow = shadow,
 		Activated = function(instance)
-			print(instance)
+			print("Pressed!")
 		end,
 		Corners = corners,
 

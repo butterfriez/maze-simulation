@@ -14,10 +14,12 @@ type Scope<T = Fusion> = Fusion.Scope<T>
 type UsedAs<T> = Fusion.UsedAs<T>
 type StateObject<T> = Fusion.UsedAs<T>
 
+local Theme = require(script.Parent.Parent.Theme)
+
 local Component = script.Parent.Parent.component
-local Button = require(Component.Button)
-local Card = require(Component.Card)
-local Text = require(Component.Text)
+local Button = require(Component.Core.Button)
+local Card = require(Component.Core.Card)
+local Text = require(Component.Core.Text)
 
 type Props = {
 	Parent: UsedAs<Instance?>?,
@@ -26,6 +28,7 @@ type Props = {
 return function(scope: Scope, props: Props): Instance
 	scope = scope:innerScope({}) :: Scope
 
+	local theme = Theme.Contextual:now()
 	local texure = {
 		Asset = "rbxassetid://17259633983",
 		Transparency = 0.75,
@@ -49,23 +52,23 @@ return function(scope: Scope, props: Props): Instance
 				Size = UDim2.fromScale(1, 0.1),
 
 				Texture = texure :: any,
-				Color = Color3.new(1, 0.262745, 0.423529),
+				Color = theme.Primary,
 
 				[Children] = {
 					Button(scope, {
 						AnchorPoint = Vector2.new(0.5, 0),
 						Position = UDim2.fromScale(0.5, -0.25),
-						Size = UDim2.fromScale(0.25, 1),
+						Size = UDim2.fromScale(0.2, 1),
 
 						Shadow = {
 							Offset = UDim2.fromScale(0, -0.05),
-							Color = Color3.new(0.760784, 0.2, 0.321569),
+							Color = theme.Shadow,
 							Ratio = 1,
 						},
 						Texture = texure :: any,
 
 						Corners = UDim.new(0.15),
-						Color = Color3.new(1, 0.262745, 0.423529),
+						Color = theme.Primary,
 
 						[Children] = {
 							scope:New "UIPadding" {
@@ -77,19 +80,20 @@ return function(scope: Scope, props: Props): Instance
 
 								Text = "PLAY",
 								TextScaled = true,
-								Color = Color3.new(1, 1, 1),
+								Color = theme.Text,
 								Font = Font.fromEnum(Enum.Font.BuilderSansExtraBold),
 
 								Shadow = {
 									Offset = UDim2.fromScale(0, -0.05),
-									Color = Color3.new(0, 0, 0),
+									Color = theme.Shadow,
+									Ratio = 1,
 								},
 
 								[Children] = scope:New "UIStroke" {
 									ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual,
 									StrokeSizingMode = Enum.StrokeSizingMode.ScaledSize,
 
-									Color = Color3.new(0, 0, 0),
+									Color = theme.Shadow,
 									Thickness = 0.025,
 								},
 							}),
@@ -98,11 +102,19 @@ return function(scope: Scope, props: Props): Instance
 								StrokeSizingMode = Enum.StrokeSizingMode.ScaledSize,
 								BorderStrokePosition = Enum.BorderStrokePosition.Inner,
 
-								Color = Color3.new(0.760784, 0.2, 0.321569),
+								Color = theme.Shadow,
 								Thickness = 0.025,
 							},
 						},
 					}),
+					scope:New "UIStroke" {
+						ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
+						StrokeSizingMode = Enum.StrokeSizingMode.ScaledSize,
+						BorderStrokePosition = Enum.BorderStrokePosition.Outer,
+
+						Color = theme.Shadow,
+						Thickness = 0.025,
+					},
 				},
 			}),
 		},

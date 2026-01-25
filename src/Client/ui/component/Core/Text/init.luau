@@ -18,7 +18,7 @@ type Value<T> = Fusion.Value<T>
 type Child = Fusion.Child
 
 -- Interface Types:
-local Types = script.Parent.Parent.types
+local Types = script.Parent.Parent.Parent.types
 
 local Roblox = require(Types.Roblox)
 type Object = Roblox.GuiObject
@@ -37,7 +37,7 @@ type Props = Object & {
 	-- Dynamic Properties:
 	Text: UsedAs<string>?,
 	TextScaled: UsedAs<boolean>?,
-	Font: UsedAs<Font>,
+	Font: UsedAs<Font>?,
 	Color: UsedAs<Color3>?,
 	Transparency: UsedAs<number>?,
 }
