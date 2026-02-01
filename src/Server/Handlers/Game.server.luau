@@ -87,7 +87,7 @@ local function SolveMaze(player: Player)
 		local solverModule = require(mazeSolver) :: BaseSolver.BaseSolver
 		local solver = solverModule.new(playerMaze)
 
-		solver.OnComplete:once(function(path) -- does this even need to be a signal?
+		solver.OnComplete:once(function(path)
 			PlayerPaths[player] = {
 				path = path,
 				current = 1,
@@ -105,11 +105,9 @@ networking.startGame:connect(function(player)
 	local playerState = PlayerStateHandlers.GetPlayerState(player.Name)
 
 	if playerState.gameState == "LOBBY" then
-		task.spawn(function()
-			GenerateMaze(player)
-			SolveMaze(player)
-			UpdatePlayerGameState(player, "INGAME")
-			networking.buildMaze:fire(player, PlayerMazes[player]:GetMaze() :: any)
-		end)
+		GenerateMaze(player)
+		SolveMaze(player)
+		UpdatePlayerGameState(player, "INGAME")
+		networking.buildMaze:fire(player, PlayerMazes[player]:GetMaze() :: any)
 	end
 end)

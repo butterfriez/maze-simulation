@@ -1,7 +1,6 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local CharmSync = require(ReplicatedStorage.Packages.CharmSync)
 local Remo = require(ReplicatedStorage.Packages.Remo)
-local t = require(ReplicatedStorage.Packages.t)
 local types = require(ReplicatedStorage.maze.types)
 
 type Remotes = {
@@ -11,7 +10,6 @@ type Remotes = {
 	gameEnded: Remo.ServerToClient<>,
 	buildMaze: Remo.ServerToClient<{ [number]: { [number]: { types.Node<unknown> } } }>,
 	startPath: Remo.ServerToClient<{ Vector3 }>,
-	foundCheese: Remo.ClientToServer<>,
 }
 
 local remotes: Remotes = Remo.createRemotes({
@@ -21,7 +19,6 @@ local remotes: Remotes = Remo.createRemotes({
 	gameEnded = Remo.remote(),
 	buildMaze = Remo.remote(),
 	startPath = Remo.remote(),
-	foundCheese = Remo.remote(),
 })
 
 return remotes

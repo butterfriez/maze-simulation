@@ -37,8 +37,6 @@ local function StartNPCWalk(path: { Vector3 })
 	npcObject.MoveToFinished:once(function()
 		npc:Destroy()
 		workspace:FindFirstChild("ClientMaze"):Destroy()
-
-		networking.foundCheese:fire() -- Replacement for server-client npc sync until its implemented
 	end)
 
 	for i, point in path do
