@@ -2,14 +2,17 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local BaseGenerator = require(ReplicatedStorage.maze.Generation.BaseGenerator)
 local BaseSolver = require(ReplicatedStorage.maze.Solvers.BaseSolver)
+local CustomNPC = require(ReplicatedStorage.libs.CustomNPC)
 local MazeConfig = require(ReplicatedStorage.core.MazeConfig)
 local Path = require(ReplicatedStorage.maze.util.Path)
+local PlayerState = require(ReplicatedStorage.state.atoms.PlayerState)
 local PlayerStateHandlers = require(ReplicatedStorage.state.atoms.PlayerState)
 local networking = require(ReplicatedStorage.networking)
 local types = require(ReplicatedStorage.maze.types)
 
 local PlayerMazes: { [Player]: BaseGenerator.BaseGenerator<unknown> } = {}
 local PlayerPaths: { [Player]: { path: types.Node<unknown>, current: number } } = {}
+local PlayerNpcs: { [Player]: Model } = {}
 
 local function UpdatePlayerGameState(player: Player, newState: "LOBBY" | "GENERATING" | "INGAME" | "ENDED" | "SOLVING")
 	PlayerStateHandlers.UpdatePlayerState(player.Name, function(state)
@@ -39,6 +42,40 @@ local function GenerateMaze(player: Player)
 	end
 end
 
+local function StartNPC(player)
+	if PlayerNpcs[player] then return end
+
+	local path = Path.PathToPositions(PlayerPaths[player].path)
+	local npc = ReplicatedStorage.assets.ServerNPC:Clone()
+
+	PlayerNpcs[player] = npc
+
+	npc.PrimaryPart.Position = path[1]
+	npc.Parent = workspace
+
+	local npcObject = CustomNPC.new(npc, 12)
+
+	npcObject.MoveToFinished:once(function()
+		npc:Destroy()
+		UpdatePlayerGameState(player, "ENDED")
+
+		PlayerState.UpdatePlayerState(player.Name, function(currentState)
+			currentState = table.clone(currentState)
+			currentState.coins += MazeConfig.baseReward * currentState.rewardMultiplier
+
+			return currentState
+		end)
+
+		task.delay(4, function()
+			UpdatePlayerGameState(player, "LOBBY")
+		end)
+	end)
+
+	for i, point in path do
+		npcObject:MoveTo(point, i)
+	end
+end
+
 local function SolveMaze(player: Player)
 	local playerMaze = PlayerMazes[player]
 
@@ -49,14 +86,18 @@ local function SolveMaze(player: Player)
 	if mazeSolver and playerMaze then
 		local solverModule = require(mazeSolver) :: BaseSolver.BaseSolver
 		local solver = solverModule.new(playerMaze)
-		local path = solver:Solve()
 
-		solver.OnComplete:once(function() -- does this even need to be a signal?
+		solver.OnComplete:once(function(path) -- does this even need to be a signal?
 			PlayerPaths[player] = {
 				path = path,
 				current = 1,
 			}
+			networking.startPath:fire(player, Path.PathToPositions(path))
+
+			StartNPC(player)
 		end)
+
+		solver:Solve()
 	end
 end
 
@@ -71,11 +112,4 @@ networking.startGame:connect(function(player)
 			networking.buildMaze:fire(player, PlayerMazes[player]:GetMaze() :: any)
 		end)
 	end
-end)
-
-networking.requestNextPathNode:onRequest(function(player)
-	local currentNode = PlayerPaths[player].path[PlayerPaths[player].current]
-	PlayerPaths[player].current += 1
-
-	return currentNode
 end)

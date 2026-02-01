@@ -17,6 +17,7 @@ type DataSchema = {
 	mazeSolverAlgorithm: string,
 	ratColor: SerC3,
 	uiTheme: string,
+	rewardMultiplier: number,
 }
 
 local DataInterface = {
@@ -29,6 +30,7 @@ local DataInterface = {
 		b = t.number,
 	}),
 	uiTheme = t.string,
+	rewardMultiplier = t.number,
 }
 
 local function dataCheck(value: any): DataSchema
@@ -41,6 +43,7 @@ local function dataCheck(value: any): DataSchema
 		mazeSolverAlgorithm = DataInterface.mazeSolverAlgorithm(Value.mazeSolverAlgorithm),
 		ratColor = DataInterface.ratColor(Value.ratColor),
 		uiTheme = DataInterface.uiTheme(Value.uiTheme),
+		rewardMultiplier = DataInterface.rewardMultiplier(value.rewardMultiplier),
 	}
 end
 
@@ -99,20 +102,17 @@ local function LoadData(player: Player)
 	end
 
 	Documents[player.Name] = document
+	return true
 end
 
 local function GetPlayerData(player: string)
-	if Documents[player]:IsOpen() then
-		return Documents[player]:GetCache()
-	end
+	if Documents[player]:IsOpen() then return Documents[player]:GetCache() end
 
 	return nil
 end
 
 local function SetPlayerData(player: string, data: DataSchema)
-	if Documents[player]:IsOpen() then
-		Documents[player]:SetCache(data)
-	end
+	if Documents[player]:IsOpen() then Documents[player]:SetCache(data) end
 end
 
 local function SavePlayerData(player: string)

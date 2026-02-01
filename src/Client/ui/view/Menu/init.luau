@@ -7,6 +7,7 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Fusion = require(ReplicatedStorage.Packages.Fusion)
+local networking = require(ReplicatedStorage.networking)
 local Children = Fusion.Children
 
 type Fusion = typeof(Fusion)
@@ -69,6 +70,9 @@ return function(scope: Scope, props: Props): Instance
 
 						Corners = UDim.new(0.15),
 						Color = theme.Primary,
+						Activated = function()
+							networking.startGame:fire()
+						end,
 
 						[Children] = {
 							scope:New "UIPadding" {

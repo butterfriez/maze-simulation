@@ -62,9 +62,7 @@ end
 
 local function Find(list: { AStarNode }, node: types.Node<unknown>)
 	for _, item in list do
-		if item.node == node then
-			return item
-		end
+		if item.node == node then return item end
 	end
 	return nil
 end
@@ -97,14 +95,13 @@ function AStar.Solve(self: _AStar)
 				table.insert(self._path, 1, currentNode.node)
 				currentNode = currentNode.parent
 			end
+
 			self.OnComplete:fire(self._path)
 			return
 		end
 
 		for _, successor in GetSuccessors(self._maze, currentNode.node) do
-			if Find(closed, successor) then
-				continue
-			end
+			if Find(closed, successor) then continue end
 
 			local g = currentNode.g + 1
 			local existingNode = Find(open, successor)

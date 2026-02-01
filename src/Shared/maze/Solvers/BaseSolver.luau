@@ -7,7 +7,7 @@ export type BaseSolver = {
 	new: (maze: BaseGenerator.BaseGenerator<unknown>) -> BaseSolver,
 	Solve: (self: BaseSolver) -> { types.Node<unknown> }, -- path
 	IsComplete: (self: BaseSolver) -> boolean,
-	OnComplete: signal.Signal<>,
+	OnComplete: signal.Signal<{ types.Node<unknown> }>,
 	Paint: (self: BaseSolver) -> (),
 }
 

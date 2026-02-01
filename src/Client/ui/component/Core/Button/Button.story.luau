@@ -4,6 +4,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local UILabs = require(ReplicatedStorage.Packages.UILabs)
 
 local Fusion = require(ReplicatedStorage.Packages.Fusion)
+local SoundManager = require(ReplicatedStorage.libs.SoundManager)
 local Children = Fusion.Children
 
 type Fusion = typeof(Fusion)
@@ -24,6 +25,8 @@ return UILabs.CreateFusionStory({
 	fusion = Fusion,
 	controls = STORY_CONTROLS,
 }, function(props)
+	SoundManager.LoadSounds(ReplicatedStorage.assets.sounds :: Folder)
+
 	local scope = props.scope :: Scope
 	local controls = props.controls :: Controls
 

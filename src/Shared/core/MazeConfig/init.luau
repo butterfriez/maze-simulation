@@ -1,4 +1,5 @@
 return {
+	baseReward = 20, -- Multiplies with an upgrade.
 	generationAlgorithms = {
 		["Recursive Backtracker"] = {
 			key = "RecursiveBacktracker",

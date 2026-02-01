@@ -11,6 +11,7 @@ export type PlayerState = {
 	gameState: "LOBBY" | "INGAME" | "GENERATING" | "SOLVING" | "ENDED",
 	ratColor: Color3,
 	uiTheme: "Light" | "Dark",
+	rewardMultiplier: number,
 }
 
 local PlayerStatesAtom = Charm.atom({}) :: Charm.Atom<{ [string]: PlayerState }>
@@ -23,6 +24,7 @@ local DefaultPlayerState: PlayerState = {
 	gameState = "LOBBY",
 	ratColor = Color3.new(0, 0, 0),
 	uiTheme = "Dark",
+	rewardMultiplier = 1,
 }
 
 local function GetPlayerState(player: string)

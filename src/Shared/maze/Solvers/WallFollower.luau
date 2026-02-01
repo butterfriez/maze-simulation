@@ -89,7 +89,7 @@ function WallFollower.Solve(self: _WallFollower)
 	end
 
 	self._complete = true
-	self.OnComplete:fire()
+	self.OnComplete:fire(self._path)
 
 	return self._path
 end
