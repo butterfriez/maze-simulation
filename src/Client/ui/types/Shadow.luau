@@ -24,19 +24,12 @@ local SHADOW_CONTROLS = {
 	["Shadow: Ratio"] = UILabs.Slider(0.5, 0, 1),
 	["Shadow: Transparency"] = UILabs.Slider(0, 0, 1),
 }
-type ShadowControls = typeof(SHADOW_CONTROLS)
-type Controls = { [string]: any }
+export type Controls = typeof(SHADOW_CONTROLS)
 
 return table.freeze {
 	Story = table.freeze {
-		Controls = function<T>(controls: T): T & ShadowControls
-			for key, value in SHADOW_CONTROLS :: any do
-				if (controls :: any)[key] then continue end
-				(controls :: any)[key] = value
-			end
-			return controls
-		end,
-		Properties = function(scope: Scope, controls: Controls & ShadowControls): Shadow
+		Controls = SHADOW_CONTROLS,
+		Properties = function(scope: Scope, controls: { [string]: any } & Controls): Shadow
 			local offset = scope:Computed(function(use: any)
 				return UDim2.fromOffset(use(controls["Shadow: Offset (X)"]), use(controls["Shadow: Offset (Y)"]))
 			end)
