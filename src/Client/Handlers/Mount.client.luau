@@ -30,6 +30,7 @@ local scope = Fusion:scoped({
 	Debug = require(UI.view.Debug),
 	Menu = require(UI.view.Menu),
 	HUD = require(UI.view.HUD),
+	Replay = require(UI.view.Replay),
 })
 
 -- TODO: Move declaration. Handled by Charm?
@@ -65,8 +66,18 @@ scope:New "ScreenGui" {
 
 		scope:Computed(function(use)
 			local state: PlayerState.PlayerState = use(PlayerState.current)
-			return if state and state.gameState == "LOBBY" then scope:Menu({}) else nil
+
+			if state then
+				if state.gameState == "LOBBY" then
+					scope:Menu({})
+				elseif state.gameState == "REPLAYSEL" then
+					scope:Replay({ Player = Player.Name })
+				elseif state.gameState == "INGAME" then
+					scope:HUD({})
+				end
+			end
+
+			return nil
 		end),
-		-- TODO: Define some computed for the HUD!
 	},
 }
