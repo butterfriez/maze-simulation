@@ -25,12 +25,7 @@ local STORY_CONTROLS = {
 }
 type Controls = typeof(STORY_CONTROLS) & Shadow.Controls
 
-return UILabs.CreateFusionStory({
-	fusion = Fusion,
-	controls = Dictionary.join(Shadow.Story.Controls, STORY_CONTROLS) :: any,
-}, function(props)
-	SoundManager.LoadSounds(ReplicatedStorage.assets.sounds :: Folder)
-
+return CreateStory(function(props)
 	local scope = props.scope :: Scope
 	local controls = props.controls :: Controls
 
@@ -75,4 +70,4 @@ return UILabs.CreateFusionStory({
 	})
 
 	return nil
-end, STORY_CONTROLS)
+end, Dictionary.join(Shadow.Story.Controls, STORY_CONTROLS))
