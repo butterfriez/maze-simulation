@@ -52,20 +52,13 @@ local TEXTURE_CONTROLS = {
 	["Texture: Transparency"] = UILabs.Slider(0, 0, 1),
 	["Texture: ScaleType"] = UILabs.EnumList(SCALE_TYPE_LIST, "Stretch"),
 }
-type TextureControls = typeof(TEXTURE_CONTROLS)
-type Controls = { [string]: any }
+export type Controls = typeof(TEXTURE_CONTROLS)
 
 return table.freeze {
 	Empty = EMPTY_TEXTURE,
 	Story = table.freeze {
-		Controls = function<T>(controls: T): T & TextureControls
-			for key, value in TEXTURE_CONTROLS :: any do
-				if (controls :: any)[key] then continue end
-				(controls :: any)[key] = value
-			end
-			return controls
-		end,
-		Properties = function(scope: Scope, controls: Controls & TextureControls): Texture
+		Controls = TEXTURE_CONTROLS,
+		Properties = function(scope: Scope, controls: { [string]: any } & Controls): Texture
 			return {
 				Asset = controls["Texture: Asset"],
 				Color = controls["Texture: Color"],
@@ -82,6 +75,8 @@ return table.freeze {
 			return EMPTY_TEXTURE, "Frame"
 		end
 	end,
+
+	-- TODO: Replace this with some Sift method!
 	Apply = function<T>(texture: Texture, props: T): T
 		if texture == EMPTY_TEXTURE then return props end
 		for a, b in TEXTURE_MAP :: any do

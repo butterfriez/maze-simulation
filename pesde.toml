@@ -19,6 +19,7 @@ roblox_sync_config_generator = ".pesde/scripts/roblox_sync_config_generator.luau
 sourcemap_generator = ".pesde/scripts/sourcemap_generator.luau"
 
 [dependencies]
+# Wally Dependencies:
 Fusion = { wally = "plainsour/lemon", version = "0.4.0-dev.1.4" }
 Charm = { wally = "littensy/charm", version = "0.10.0" }
 CharmSync = { wally = "littensy/charm-sync", version = "0.3.0" }
@@ -28,6 +29,9 @@ t = { wally = "osyrisrblx/t", version = "3.1.1" }
 Promise = { wally = "evaera/promise", version = "4.0.0" }
 Cmdr = { wally = "evaera/cmdr", version = "1.12.0" }
 CrunchyRoll = { wally = "ffrostfall/crunchyroll", version = "0.2.0" }
+Sift = { wally = "csqrl/sift", version = "0.0.11" }
+
+# Pesde Dependencies:
 Signal = { name = "jiwonz/signal", version = "0.1.0" }
 
 [dev_dependencies]

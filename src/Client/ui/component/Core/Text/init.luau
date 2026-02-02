@@ -77,7 +77,7 @@ return function(scope: Scope, props: Props)
 	local instance = scope:New(classname) {
 		Parent = props.Parent,
 
-		Zindex = props.ZIndex,
+		ZIndex = props.ZIndex,
 		LayoutOrder = props.LayoutOrder,
 
 		AnchorPoint = props.AnchorPoint,

@@ -6,6 +6,9 @@ local StarterPlayer = game:GetService("StarterPlayer")
 local CreateStory = require(StarterPlayer.StarterPlayerScripts.ui.CreateStory)
 local UILabs = require(ReplicatedStorage.Packages.UILabs)
 
+local Sift = require(ReplicatedStorage.Packages.Sift)
+local Dictionary = Sift.Dictionary
+
 local Fusion = require(ReplicatedStorage.Packages.Fusion)
 local Children = Fusion.Children
 
@@ -18,14 +21,17 @@ local Types = script.Parent.Parent.Parent.Parent.types
 local Shadow = require(Types.Shadow)
 local Texture = require(Types.Texture)
 
-local STORY_CONTROLS = Shadow.Story.Controls(Texture.Story.Controls({
+local STORY_CONTROLS = {
 	Corners = UILabs.Slider(0, 0, 1),
 	Color = Color3.new(1, 1, 1),
 	Transparency = UILabs.Slider(0, 0, 1),
-}))
-type Controls = typeof(STORY_CONTROLS)
+}
+type Controls = typeof(STORY_CONTROLS) & Shadow.Controls & Texture.Controls
 
-return CreateStory(function(props)
+return UILabs.CreateFusionStory({
+	fusion = Fusion,
+	controls = Dictionary.join(Shadow.Story.Controls, Texture.Story.Controls, STORY_CONTROLS) :: any,
+}, function(props)
 	local scope = props.scope :: Scope
 	local controls = props.controls :: Controls
 

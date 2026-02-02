@@ -10,7 +10,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 -- Constants:
 local DEFAULT_COLOR: Color3 = Color3.new(1, 1, 1) --> TODO: Pull from theme?
 
--- Fusion | Definitons:
+-- Fusion | Definitions:
 local Fusion = require(ReplicatedStorage.Packages.Fusion)
 local Children = Fusion.Children
 
