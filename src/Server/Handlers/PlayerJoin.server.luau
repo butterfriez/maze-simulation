@@ -22,7 +22,7 @@ Players.PlayerAdded:Connect(function(player)
 		currentState.ratColor = Color3.fromRGB(data.ratColor.r, data.ratColor.g, data.ratColor.b)
 		currentState.rewardMultiplier = data.rewardMultiplier
 
-		return currentState -- forgot to return this so it caused me to debug why playerstate wasn't being set for an hour looooooooooool
+		return currentState
 	end)
 end)
 
