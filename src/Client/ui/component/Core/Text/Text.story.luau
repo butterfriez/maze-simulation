@@ -1,9 +1,7 @@
 --!strict
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local StarterPlayer = game:GetService("StarterPlayer")
 
-local CreateStory = require(StarterPlayer.StarterPlayerScripts.ui.CreateStory)
 local UILabs = require(ReplicatedStorage.Packages.UILabs)
 
 local Sift = require(ReplicatedStorage.Packages.Sift)
@@ -34,9 +32,12 @@ local STORY_CONTROLS = {
 	Color = Color3.new(1, 1, 1),
 	Transparency = UILabs.Slider(0, 0, 1),
 }
-type Controls = typeof(STORY_CONTROLS) & Shadow.Controls
+type Controls = typeof(STORY_CONTROLS) & typeof(Shadow.Story.Controls)
 
-return CreateStory(function(props)
+return UILabs.CreateFusionStory({
+	fusion = Fusion,
+	controls = Dictionary.join(Shadow.Story.Controls, STORY_CONTROLS) :: any,
+}, function(props)
 	local scope = props.scope :: Scope
 	local controls = props.controls :: Controls
 
@@ -92,4 +93,4 @@ return CreateStory(function(props)
 	}
 
 	return nil
-end, Dictionary.join(Shadow.Story.Controls, STORY_CONTROLS))
+end)

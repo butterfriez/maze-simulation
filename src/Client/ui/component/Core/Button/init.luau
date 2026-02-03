@@ -4,11 +4,11 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 -- Constants:
-local ZERO_UDIM2 = UDim2.new()
+local ZERO_UDIM2: UDim2 = UDim2.new()
+local SPRING_SPEED: number = 50
 
 -- Fusion | Definitions:
 local Fusion = require(ReplicatedStorage.Packages.Fusion)
-local SoundManager = require(ReplicatedStorage.libs.SoundManager)
 local Children = Fusion.Children
 local peek = Fusion.peek
 
@@ -17,79 +17,112 @@ type Fusion = typeof(Fusion)
 type Scope<T = Fusion> = Fusion.Scope<T>
 type UsedAs<T> = Fusion.UsedAs<T>
 type Value<T> = Fusion.Value<T>
+type Spring<T> = Fusion.Spring<T>
 type Child = Fusion.Child
 
-local Card = require(script.Parent.Card)
+local SoundManager = require(ReplicatedStorage.libs.SoundManager)
+SoundManager.Load(ReplicatedStorage.assets.sounds.Button) --> Load button sounds!
+
+local Components = script.Parent.Parent
+local Interactions = require(Components.Parent.state.Interactions)
+local Theme = require(Components.Parent.Theme)
+
+local Card = require(Components.Core.Card)
+
+-- Note: Idk if I should actually be doing something like this, it feels gross
+local function Privatize<T>(scope: Scope, value: UsedAs<T>): Value<T>
+	local internal: Value<T>
+	if typeof(value) == "table" then
+		internal = scope:Value(peek(value)) :: Value<T>
+		scope:Observer(value):onChange(function()
+			internal:set(peek(value))
+		end)
+	else
+		internal = scope:Value(value)
+	end
+	return internal
+end
 
 export type Props = Card.Props & {
+	-- TODO: Interactable: UsedAs<boolean>?,
 	Activated: ((GuiObject) -> ())?,
+	Hovered: Value<boolean>?,
 }
 type Children = { [typeof(Children)]: Child? }
 
 return function(scope: Scope, props: Props)
-	-- Ensure a reference value exists!
+	scope = scope:innerScope() :: Scope
+	local theme = Theme.Contextual:now()
+
 	local ref = props.__ref
+	local shadow = props.Shadow
+	local hovered: Value<boolean> = props.Hovered or scope:Value(false) :: any
+
+	-- Ensure reference Value exists:
 	if not ref then
 		ref = scope:Value(nil) :: Value<GuiObject?>
 		props.__ref = ref
 	end
 
-	local offset: Value<UDim2>
-	local cScale = scope:Value(props.Scale or 1)
+	do -- Handle color highlighting:
+		local color = props.Color or theme.Primary
+		local goal = Privatize(scope, color :: Color3)
 
-	local shadow = props.Shadow
+		scope:Observer(hovered):onChange(function()
+			local current = peek(color)
+			local highlight = current:Lerp(peek(theme.Shadow), 0.25)
+			goal:set(if peek(hovered) then highlight else current)
+		end)
+		props.Color = scope:Spring(goal :: any, 50, 2) :: any
+	end
+
+	local __offset: UsedAs<UDim2>?, offset: Value<UDim2>? = nil, nil
 	if shadow then
-		if typeof(shadow.Offset) == "UDim2" then
-			offset = scope:Value(shadow.Offset) :: Value<UDim2>
-		else
-			local supplied = shadow.Offset
-			offset = scope:Value(ZERO_UDIM2) :: Value<UDim2>
-			scope:Observer(supplied):onBind(function()
-				local value = peek(supplied :: any) :: UDim2
-				offset:set(value)
-			end)
-		end
-		shadow.Offset = scope:Spring(offset :: any, 50) :: UsedAs<UDim2>
-	else
-		offset = scope:Value(ZERO_UDIM2) :: Value<UDim2>
+		__offset = shadow.Offset
+		offset = Privatize(scope, __offset :: UDim2)
+		shadow.Offset = scope:Spring(offset :: any, SPRING_SPEED) :: UsedAs<UDim2>
 	end
 
 	props.Scale = scope:Spring(cScale, 40) :: UsedAs<number>
 
 	local card = Card(scope, props :: Card.Props & Children)
 
+	local previous: Scope? = nil
 	scope:Observer(ref):onBind(function()
-		local object = Fusion.peek(ref) :: GuiButton?
+		local object = Fusion.peek(ref) :: GuiObject?
 		if not object then return end
 
+		if previous then
+			previous:doCleanup()
+			previous = nil
+		end
+
 		local scope = scope:innerScope() :: Scope
-		local preserved = { Offset = nil :: UDim2? }
+		previous = scope
 
-		local hover = object.MouseEnter:Connect(function()
-			SoundManager.GetSound("hover1_btn"):Play()
-			cScale:set(1.05)
-		end)
+		scope:insert({
+			-- TODO: Implement scale-on-hover
+			object.MouseEnter:Connect(function()
+				Interactions.Hovered:set(object)
+				hovered:set(true)
+				SoundManager.Play(SoundManager.Get("hover_btn"))
+			end),
+			object.MouseLeave:Connect(function()
+				Interactions.Hovered:set(nil)
+				hovered:set(false)
+			end),
 
-		local hoverEnd = object.MouseLeave:Connect(function()
-			SoundManager.GetSound("hover2_btn"):Play()
-			cScale:set(1)
-		end)
-
-		local began = object.InputBegan:Connect(function(input)
-			if input.UserInputType ~= Enum.UserInputType.MouseButton1 then return end
-			if not shadow or preserved.Offset then return end
-			preserved.Offset = peek(offset :: any) :: UDim2
-			offset:set(ZERO_UDIM2)
-			SoundManager.GetSound("click_btn"):Play()
-		end)
-		local ended = object.InputEnded:Connect(function(input)
-			if input.UserInputType ~= Enum.UserInputType.MouseButton1 then return end
-			if not (shadow and preserved.Offset) then return end
-			offset:set(preserved.Offset :: UDim2)
-			preserved.Offset = nil
-			if props.Activated then props.Activated(card :: GuiObject) end
-		end)
-		scope:insert(began, ended, hover, hoverEnd)
+			object.InputBegan:Connect(function(input)
+				if not Interactions.Activated(input) then return end
+				if __offset and offset then offset:set(ZERO_UDIM2) end
+			end),
+			object.InputEnded:Connect(function(input)
+				if not Interactions.Activated(input) then return end
+				if __offset and offset then offset:set(peek(__offset)) end
+				if props.Activated then props.Activated(object) end
+				SoundManager.Play(SoundManager.Get("click_btn"))
+			end),
+		})
 	end)
 
 	return card

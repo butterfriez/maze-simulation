@@ -58,7 +58,7 @@ scope:New "ScreenGui" {
 
 	[Children] = {
 		-- Mount debug menu as necessary:
-		scope:Computed(function(use)
+		scope:Computed(function(use: any)
 			local enabled: boolean = use(DEBUG_MODE)
 			return if enabled
 				then scope:Debug({
@@ -67,7 +67,7 @@ scope:New "ScreenGui" {
 				else nil
 		end),
 
-		scope:Computed(function(use)
+		scope:Computed(function(use: any)
 			local state: PlayerState.PlayerState = use(PlayerState.current)
 			if state then
 				if state.gameState == "LOBBY" then

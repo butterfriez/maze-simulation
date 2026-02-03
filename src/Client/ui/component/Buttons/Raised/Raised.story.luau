@@ -3,16 +3,15 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local UILabs = require(ReplicatedStorage.Packages.UILabs)
 
 local Fusion = require(ReplicatedStorage.Packages.Fusion)
-local peek = Fusion.peek
+local Children = Fusion.Children
 
 type Fusion = typeof(Fusion)
 type Scope<T = Fusion> = Fusion.Scope<T>
 
-local Menu = require(script.Parent)
-local Theme = require(script.Parent.Parent.Parent.Theme)
+local Component = require(script.Parent)
 
 local STORY_CONTROLS = {
-	Theme = UILabs.EnumList(Theme.List, "Dark"),
+	Corners = UILabs.Slider(0.15, 0, 1),
 }
 type Controls = typeof(STORY_CONTROLS)
 
@@ -23,18 +22,17 @@ return UILabs.CreateFusionStory({
 	local scope = props.scope :: Scope
 	local controls = props.controls :: Controls
 
-	local previous: Scope? = nil
-	scope:Observer(controls.Theme):onBind(function()
-		if previous then
-			previous:doCleanup()
-			previous = nil
-		end
-
-		local scope = scope:innerScope() :: Scope
-		previous = scope
-
-		Theme.Contextual:is(peek(controls.Theme)):during(function()
-			Menu(previous, { Parent = props.target })
-		end)
+	local corners = scope:Computed(function(use: any, scope: Scope)
+		return UDim.new(use(controls.Corners))
 	end)
+
+	Component(scope, {
+		Parent = props.target,
+
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		Position = UDim2.fromScale(0.5, 0.5),
+		Size = UDim2.fromScale(0.2, 0.2),
+
+		Corners = corners,
+	})
 end)

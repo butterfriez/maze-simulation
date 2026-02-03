@@ -18,8 +18,8 @@ type StateObject<T> = Fusion.UsedAs<T>
 local Theme = require(script.Parent.Parent.Theme)
 
 local Component = script.Parent.Parent.component
-local Button = require(Component.Core.Button)
 local Card = require(Component.Core.Card)
+local RaisedButton = require(Component.Buttons.Raised)
 local Text = require(Component.Core.Text)
 
 type Props = {
@@ -31,10 +31,12 @@ return function(scope: Scope, props: Props): Instance
 
 	local theme = Theme.Contextual:now()
 	local texure = {
-		Asset = "rbxassetid://17259633983",
-		Transparency = 0.75,
+		Asset = "rbxassetid://2151741365",
+		Color = theme.Shadow,
+		Transparency = 0.5,
+
 		ScaleType = Enum.ScaleType.Tile,
-		TileSize = UDim2.fromOffset(100, 100),
+		TileSize = UDim2.fromOffset(200, 200),
 	}
 
 	return scope:New "Frame" {
@@ -56,21 +58,15 @@ return function(scope: Scope, props: Props): Instance
 				Color = theme.Primary,
 
 				[Children] = {
-					-- Play button
-					Button(scope, {
+					RaisedButton(scope, {
 						AnchorPoint = Vector2.new(0.5, 0),
 						Position = UDim2.fromScale(0.5, -0.25),
 						Size = UDim2.fromScale(0.2, 1),
 
-						Shadow = {
-							Offset = UDim2.fromScale(0, -0.05),
-							Color = theme.Shadow,
-							Ratio = 1,
-						},
 						Texture = texure :: any,
-
-						Corners = UDim.new(0.15),
 						Color = theme.Primary,
+						Corners = UDim.new(0.15),
+
 						Activated = function()
 							networking.startGame:fire()
 						end,
@@ -85,9 +81,9 @@ return function(scope: Scope, props: Props): Instance
 
 								Text = "PLAY",
 								TextScaled = true,
-								Color = theme.Text,
 								Font = Font.fromEnum(Enum.Font.BuilderSansExtraBold),
 
+								Color = theme.Text,
 								Shadow = {
 									Offset = UDim2.fromScale(0, -0.05),
 									Color = theme.Shadow,
@@ -102,14 +98,6 @@ return function(scope: Scope, props: Props): Instance
 									Thickness = 0.025,
 								},
 							}),
-							scope:New "UIStroke" {
-								ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
-								StrokeSizingMode = Enum.StrokeSizingMode.ScaledSize,
-								BorderStrokePosition = Enum.BorderStrokePosition.Inner,
-
-								Color = theme.Shadow,
-								Thickness = 0.025,
-							},
 						},
 					}),
 
