@@ -6,7 +6,6 @@ local RunService = game:GetService("RunService")
 
 -- Constants:
 local SPIN_DEGREES_PER_SECOND = 180
-local SPIN_SIZE = 50
 
 -- Fusion | Definitions:
 local Fusion = require(ReplicatedStorage.Packages.Fusion)
