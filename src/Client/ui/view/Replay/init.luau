@@ -139,7 +139,7 @@ local function ReplayDisplay(scope: Scope, props: ReplayDisplayProps): any -- Si
 		Size = Vector2.new(imgSize + 1, imgSize + 1),
 	})
 
-	DrawMaze(image, (value :: PlayerState.Replay).Algorithms.maze, (value :: PlayerState.Replay).date, render)
+	DrawMaze(image, (value :: PlayerState.Replay).algorithms.maze, (value :: PlayerState.Replay).date, render)
 
 	return scope:Computed(function(use)
 		if use(render) then

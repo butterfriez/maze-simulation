@@ -21,6 +21,7 @@ Players.PlayerAdded:Connect(function(player)
 		}
 		currentState.ratColor = Color3.fromRGB(data.ratColor.r, data.ratColor.g, data.ratColor.b)
 		currentState.rewardMultiplier = data.rewardMultiplier
+		currentState.replays = data.savedReplays
 
 		return currentState
 	end)
@@ -36,6 +37,7 @@ Players.PlayerRemoving:Connect(function(player)
 		mazeSolverAlgorithm = playerState.algorithms.solver,
 		uiTheme = playerState.uiTheme,
 		rewardMultiplier = playerState.rewardMultiplier,
+		savedReplays = playerState.replays,
 	})
 
 	DataHandlers.SavePlayerData(player.Name)

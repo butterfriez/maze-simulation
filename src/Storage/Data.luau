@@ -3,6 +3,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 
 local DocumentService = require(ReplicatedStorage.Packages.DocumentService)
+local PlayerState = require(ReplicatedStorage.state.atoms.PlayerState)
 local t = require(ReplicatedStorage.Packages.t)
 
 type SerC3 = {
@@ -18,6 +19,7 @@ type DataSchema = {
 	ratColor: SerC3,
 	uiTheme: string,
 	rewardMultiplier: number,
+	savedReplays: { PlayerState.Replay },
 }
 
 local DataInterface = {
@@ -31,6 +33,14 @@ local DataInterface = {
 	}),
 	uiTheme = t.string,
 	rewardMultiplier = t.number,
+	savedReplays = t.array(t.interface({
+		algorithms = t.interface({
+			maze = t.string,
+			solver = t.string,
+		}),
+		date = t.number,
+		time = t.number,
+	})),
 }
 
 local function dataCheck(value: any): DataSchema
@@ -44,6 +54,7 @@ local function dataCheck(value: any): DataSchema
 		ratColor = DataInterface.ratColor(Value.ratColor),
 		uiTheme = DataInterface.uiTheme(Value.uiTheme),
 		rewardMultiplier = DataInterface.rewardMultiplier(value.rewardMultiplier),
+		savedReplays = DataInterface.savedReplays(Value.savedReplays),
 	}
 end
 
@@ -63,6 +74,22 @@ local store = DocumentService.DocumentStore.new({
 			migrate = function(old)
 				old = table.clone(old)
 				old.uiTheme = "Dark"
+				return old
+			end,
+			backwardsCompatible = true,
+		},
+		{
+			migrate = function(old)
+				old = table.clone(old)
+				old.rewardMultiplier = 1
+				return old
+			end,
+			backwardsCompatible = true,
+		},
+		{
+			migrate = function(old)
+				old = table.clone(old)
+				old.savedReplays = {}
 				return old
 			end,
 			backwardsCompatible = true,

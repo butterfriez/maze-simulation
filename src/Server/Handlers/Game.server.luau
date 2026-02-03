@@ -1,7 +1,9 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
 
 local BaseGenerator = require(ReplicatedStorage.maze.Generation.BaseGenerator)
 local BaseSolver = require(ReplicatedStorage.maze.Solvers.BaseSolver)
+local CONSTANTS = require(ReplicatedStorage.core.CONSTANTS)
 local CustomNPC = require(ReplicatedStorage.libs.CustomNPC)
 local MazeConfig = require(ReplicatedStorage.core.MazeConfig)
 local Path = require(ReplicatedStorage.maze.util.Path)
@@ -53,7 +55,8 @@ local function StartNPC(player)
 	npc.PrimaryPart.Position = path[1]
 	npc.Parent = workspace
 
-	local npcObject = CustomNPC.new(npc, 12)
+	local npcObject =
+		CustomNPC.new(npc, if RunService:IsStudio() then CONSTANTS.DEBUG_WALKSPEED else CONSTANTS.BASE_WALKSPEED)
 
 	npcObject.MoveToFinished:once(function()
 		npc:Destroy()
@@ -61,7 +64,7 @@ local function StartNPC(player)
 
 		PlayerState.UpdatePlayerState(player.Name, function(currentState)
 			currentState = table.clone(currentState)
-			currentState.coins += MazeConfig.baseReward * currentState.rewardMultiplier
+			currentState.coins += CONSTANTS.BASE_REWARD * currentState.rewardMultiplier
 
 			return currentState
 		end)
