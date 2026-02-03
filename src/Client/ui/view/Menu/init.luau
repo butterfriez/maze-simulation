@@ -102,7 +102,7 @@ return function(scope: Scope, props: Props): Instance
 					}),
 
 					-- Replay button
-					Button(scope, {
+					RaisedButton(scope, {
 						AnchorPoint = Vector2.new(0.5, 0),
 						Position = UDim2.fromScale(0.2, -0.15),
 						Size = UDim2.fromScale(0.2, 1),

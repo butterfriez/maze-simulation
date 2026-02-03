@@ -35,40 +35,82 @@ return UILabs.CreateFusionStory({
 		return UDim.new(use(controls.Corners))
 	end)
 
-	Component(scope, {
+	local function onActivate()
+		print("Pressed!")
+	end
+
+	scope:New "Frame" {
 		Parent = props.target,
 
-		AnchorPoint = Vector2.one / 2,
-		Position = UDim2.fromScale(0.5, 0.5),
-		Size = UDim2.fromScale(0.25, 0.25),
-
-		Color = controls.Color,
-		Shadow = shadow,
-		Activated = function(instance)
-			print("Pressed!")
-		end,
-		Corners = corners,
+		Size = UDim2.fromScale(1, 1),
+		BackgroundTransparency = 1,
 
 		[Children] = {
-			scope:New "TextLabel" {
-				Size = UDim2.fromScale(1, 1),
+			scope:New "UIGridLayout" {
+				HorizontalAlignment = Enum.HorizontalAlignment.Center,
+				VerticalAlignment = Enum.VerticalAlignment.Center,
+				CellSize = UDim2.fromScale(0.2, 0.2),
+				CellPadding = UDim2.fromScale(0.05, 0.05),
+			},
+			Component(scope, {
+				LayoutOrder = 1,
 
-				BackgroundTransparency = 1,
+				Color = controls.Color,
+				Shadow = shadow,
+				Corners = corners,
 
-				Text = "Press Me!",
-				TextScaled = true,
+				Activated = onActivate,
 
 				[Children] = {
-					scope:New "UIPadding" {
-						PaddingTop = UDim.new(0.25),
-						PaddingBottom = UDim.new(0.25),
-						PaddingLeft = UDim.new(0.1),
-						PaddingRight = UDim.new(0.1),
+					scope:New "TextLabel" {
+						Size = UDim2.fromScale(1, 1),
+
+						BackgroundTransparency = 1,
+
+						Text = "SHADOW = ENABLED",
+						TextScaled = true,
+
+						[Children] = {
+							scope:New "UIPadding" {
+								PaddingTop = UDim.new(0.25),
+								PaddingBottom = UDim.new(0.25),
+								PaddingLeft = UDim.new(0.1),
+								PaddingRight = UDim.new(0.1),
+							},
+						},
 					},
 				},
-			},
+			}),
+			Component(scope, {
+				LayoutOrder = 2,
+
+				Color = controls.Color,
+				Corners = corners,
+
+				Activated = onActivate,
+
+				[Children] = {
+					scope:New "TextLabel" {
+						Size = UDim2.fromScale(1, 1),
+
+						BackgroundTransparency = 1,
+
+						Text = "SHADOW = DISABLED",
+						TextScaled = true,
+
+						[Children] = {
+							scope:New "UIPadding" {
+								PaddingTop = UDim.new(0.25),
+								PaddingBottom = UDim.new(0.25),
+								PaddingLeft = UDim.new(0.1),
+								PaddingRight = UDim.new(0.1),
+							},
+						},
+					},
+				},
+			}),
 		},
-	})
+	}
 
 	return nil
 end)

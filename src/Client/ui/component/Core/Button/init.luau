@@ -6,6 +6,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 -- Constants:
 local ZERO_UDIM2: UDim2 = UDim2.new()
 local SPRING_SPEED: number = 50
+local HOVER_MULTIPLIER: number = 1.05
 
 -- Fusion | Definitions:
 local Fusion = require(ReplicatedStorage.Packages.Fusion)
@@ -64,26 +65,38 @@ return function(scope: Scope, props: Props)
 		props.__ref = ref
 	end
 
-	do -- Handle color highlighting:
-		local color = props.Color or theme.Primary
-		local goal = Privatize(scope, color :: Color3)
-
-		scope:Observer(hovered):onChange(function()
-			local current = peek(color)
-			local highlight = current:Lerp(peek(theme.Shadow), 0.25)
-			goal:set(if peek(hovered) then highlight else current)
-		end)
-		props.Color = scope:Spring(goal :: any, 50, 2) :: any
-	end
-
 	local __offset: UsedAs<UDim2>?, offset: Value<UDim2>? = nil, nil
+	local __scale: UsedAs<number>?, scale: Value<number>? = nil, nil
+
 	if shadow then
 		__offset = shadow.Offset
 		offset = Privatize(scope, __offset :: UDim2)
 		shadow.Offset = scope:Spring(offset :: any, SPRING_SPEED) :: UsedAs<UDim2>
+	else
+		__scale = props.Scale or 1
+		scale = Privatize(scope, __scale :: number)
+		props.Scale = scope:Spring((scale :: any) :: number, SPRING_SPEED)
 	end
 
-	props.Scale = scope:Spring(cScale, 40) :: UsedAs<number>
+	do -- Handle color hover effects:
+		-- TODO: Rename the variables in here to be more descriptive
+		local color = props.Color or theme.Primary
+		local goal = Privatize(scope, color :: Color3)
+
+		scope:Observer(hovered):onChange(function()
+			local hovering = peek(hovered)
+
+			local current = peek(color)
+			local highlight = current:Lerp(peek(theme.Shadow), 0.25)
+			goal:set(if hovering then highlight else current)
+
+			if scale and __scale then
+				local value = peek(__scale)
+				scale:set(if hovering then value * HOVER_MULTIPLIER else value)
+			end
+		end)
+		props.Color = scope:Spring(goal :: any, 50, 2) :: any
+	end
 
 	local card = Card(scope, props :: Card.Props & Children)
 
@@ -101,7 +114,6 @@ return function(scope: Scope, props: Props)
 		previous = scope
 
 		scope:insert({
-			-- TODO: Implement scale-on-hover
 			object.MouseEnter:Connect(function()
 				Interactions.Hovered:set(object)
 				hovered:set(true)
@@ -112,6 +124,7 @@ return function(scope: Scope, props: Props)
 				hovered:set(false)
 			end),
 
+			-- TODO: Implement rescaling on pressed:
 			object.InputBegan:Connect(function(input)
 				if not Interactions.Activated(input) then return end
 				if __offset and offset then offset:set(ZERO_UDIM2) end
