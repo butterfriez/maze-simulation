@@ -10,6 +10,7 @@ type Remotes = {
 	gameEnded: Remo.ServerToClient<>,
 	buildMaze: Remo.ServerToClient<{ [number]: { [number]: { types.Node<unknown> } } }>,
 	startPath: Remo.ServerToClient<{ Vector3 }>,
+	requestChangeState: Remo.ClientToServer<>,
 }
 
 local remotes: Remotes = Remo.createRemotes({
@@ -19,6 +20,7 @@ local remotes: Remotes = Remo.createRemotes({
 	gameEnded = Remo.remote(),
 	buildMaze = Remo.remote(),
 	startPath = Remo.remote(),
+	requestChangeState = Remo.remote(),
 })
 
 return remotes

@@ -100,6 +100,64 @@ return function(scope: Scope, props: Props): Instance
 							}),
 						},
 					}),
+
+					-- Replay button
+					Button(scope, {
+						AnchorPoint = Vector2.new(0.5, 0),
+						Position = UDim2.fromScale(0.2, -0.15),
+						Size = UDim2.fromScale(0.2, 1),
+
+						Shadow = {
+							Offset = UDim2.fromScale(0, -0.05),
+							Color = theme.Shadow,
+							Ratio = 1,
+						},
+						Texture = texure :: any,
+
+						Corners = UDim.new(0.15),
+						Color = theme.Primary,
+						Activated = function()
+							networking.requestChangeState:fire("REPLAYSEL")
+						end,
+
+						[Children] = {
+							scope:New "UIPadding" {
+								PaddingTop = UDim.new(0.1),
+								PaddingBottom = UDim.new(0.1),
+							},
+							Text(scope, {
+								Size = UDim2.fromScale(1, 1),
+
+								Text = "REPLAYS",
+								TextScaled = true,
+								Color = theme.Text,
+								Font = Font.fromEnum(Enum.Font.BuilderSansExtraBold),
+
+								Shadow = {
+									Offset = UDim2.fromScale(0, -0.05),
+									Color = theme.Shadow,
+									Ratio = 1,
+								},
+
+								[Children] = scope:New "UIStroke" {
+									ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual,
+									StrokeSizingMode = Enum.StrokeSizingMode.ScaledSize,
+
+									Color = theme.Shadow,
+									Thickness = 0.025,
+								},
+							}),
+							scope:New "UIStroke" {
+								ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
+								StrokeSizingMode = Enum.StrokeSizingMode.ScaledSize,
+								BorderStrokePosition = Enum.BorderStrokePosition.Inner,
+
+								Color = theme.Shadow,
+								Thickness = 0.025,
+							},
+						},
+					}),
+
 					scope:New "UIStroke" {
 						ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
 						StrokeSizingMode = Enum.StrokeSizingMode.ScaledSize,

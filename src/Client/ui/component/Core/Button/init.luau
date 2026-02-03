@@ -83,6 +83,8 @@ return function(scope: Scope, props: Props)
 		shadow.Offset = scope:Spring(offset :: any, SPRING_SPEED) :: UsedAs<UDim2>
 	end
 
+	props.Scale = scope:Spring(cScale, 40) :: UsedAs<number>
+
 	local card = Card(scope, props :: Card.Props & Children)
 
 	local previous: Scope? = nil
@@ -99,6 +101,7 @@ return function(scope: Scope, props: Props)
 		previous = scope
 
 		scope:insert({
+			-- TODO: Implement scale-on-hover
 			object.MouseEnter:Connect(function()
 				Interactions.Hovered:set(object)
 				hovered:set(true)

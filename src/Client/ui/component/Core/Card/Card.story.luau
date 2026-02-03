@@ -23,6 +23,7 @@ local STORY_CONTROLS = {
 	Corners = UILabs.Slider(0, 0, 1),
 	Color = Color3.new(1, 1, 1),
 	Transparency = UILabs.Slider(0, 0, 1),
+	Scale = UILabs.Slider(1, -1, 2),
 }
 type Controls = typeof(STORY_CONTROLS) & typeof(Shadow.Story.Controls) & typeof(Texture.Story.Controls)
 
@@ -37,6 +38,9 @@ return UILabs.CreateFusionStory({
 	local texture = Texture.Story.Properties(scope, controls)
 	local corners = scope:Computed(function(use: any, scope: Scope)
 		return UDim.new(use(controls.Corners))
+	end)
+	local scale = scope:Computed(function(use: any)
+		return use(controls.Scale)
 	end)
 
 	scope:New "Frame" {
@@ -68,6 +72,7 @@ return UILabs.CreateFusionStory({
 				Shadow = shadow,
 				Texture = texture,
 				Corners = corners,
+				Scale = scale,
 
 				[Children] = scope:New "TextLabel" {
 					Size = UDim2.fromScale(1, 1),
@@ -84,6 +89,7 @@ return UILabs.CreateFusionStory({
 
 				Texture = texture,
 				Corners = corners,
+				Scale = scale,
 
 				[Children] = scope:New "TextLabel" {
 					Size = UDim2.fromScale(1, 1),
@@ -100,6 +106,7 @@ return UILabs.CreateFusionStory({
 
 				Shadow = shadow,
 				Corners = corners,
+				Scale = scale,
 
 				[Children] = scope:New "TextLabel" {
 					Size = UDim2.fromScale(1, 1),
@@ -113,6 +120,7 @@ return UILabs.CreateFusionStory({
 
 				Color = controls.Color,
 				Transparency = controls.Transparency :: any,
+				Scale = scale,
 
 				Corners = corners,
 

@@ -2,7 +2,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Charm = require(ReplicatedStorage.Packages.Charm)
 
-type Replay = {
+export type Replay = {
 	Algorithms: {
 		maze: string,
 		solver: string,
@@ -17,7 +17,7 @@ export type PlayerState = {
 		maze: string,
 		solver: string,
 	},
-	gameState: "LOBBY" | "INGAME" | "GENERATING" | "SOLVING" | "ENDED",
+	gameState: "LOBBY" | "INGAME" | "GENERATING" | "SOLVING" | "ENDED" | "REPLAYSEL",
 	ratColor: Color3,
 	uiTheme: "Light" | "Dark",
 	rewardMultiplier: number,

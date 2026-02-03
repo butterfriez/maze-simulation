@@ -24,8 +24,9 @@ local Connection = PlayNextSound()
 
 Charm.subscribe(function()
 	return PlayerState.PlayerStatesAtom()[Players.LocalPlayer.Name]
-end, function(state)
-	if state == nil then return end
+end, function(state, prev)
+	if state == nil or prev == nil then return end
+	if prev.gameState == "REPLAYSEL" then return end
 
 	if state.gameState == "INGAME" then
 		CurrentLobbySound:Stop()

@@ -41,6 +41,13 @@ local function Corners(scope: Scope, size: UsedAs<UDim>?): UICorner?
 	} :: UICorner
 end
 
+local function UIScale(scope: Scope, size: UsedAs<number>?): UIScale?
+	if not size then return nil end
+	return scope:New "UIScale" {
+		Scale = size,
+	} :: UIScale
+end
+
 -- Component | Types:
 export type Props = Object & {
 	__ref: Value<GuiObject?>?,
@@ -53,6 +60,7 @@ export type Props = Object & {
 	Corners: UsedAs<UDim>?,
 	Color: UsedAs<Color3>?,
 	Transparency: UsedAs<number>?,
+	Scale: UsedAs<number>?,
 }
 
 -- Component | Constructor:
@@ -99,7 +107,7 @@ return function(scope: Scope, props: Props)
 		BackgroundTransparency = transparency,
 		BackgroundColor3 = color,
 
-		[Children] = { children, Corners(scope, props.Corners) },
+		[Children] = { children, Corners(scope, props.Corners), UIScale(scope, props.Scale) },
 	}) :: any)
 
 	-- Populate external reference:

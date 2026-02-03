@@ -1,6 +1,7 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local CharmSync = require(ReplicatedStorage.Packages.CharmSync)
 
+local PlayerState = require(ReplicatedStorage.state.atoms.PlayerState)
 local atoms = require(ReplicatedStorage.state.atoms)
 local remotes = require(ReplicatedStorage.networking)
 
@@ -41,4 +42,26 @@ end)
 
 remotes.init:connect(function(player)
 	syncer:hydrate(player)
+end)
+
+local VALID_STATES = {
+	LOBBY = true,
+	REPLAYSEL = true,
+}
+
+remotes.requestChangeState:connect(function(player, newState)
+	if not VALID_STATES[newState] then return end
+
+	local currentState = PlayerState.GetPlayerState(player.Name)
+	if not currentState then return end
+
+	local currentGameState = currentState.gameState
+
+	if not VALID_STATES[currentGameState] then return end
+
+	PlayerState.UpdatePlayerState(player.Name, function(state)
+		state = table.clone(state)
+		state.gameState = newState
+		return state
+	end)
 end)
