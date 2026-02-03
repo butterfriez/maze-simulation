@@ -5,7 +5,8 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 
 -- Constants:
-local SPIN_DEGREES_PER_SECOND = 180
+local DEFAULT_IMAGE: string = "rbxassetid://6021874488"
+local SPIN_DEGREES_PER_SECOND: number = -180
 
 -- Fusion | Definitions:
 local Fusion = require(ReplicatedStorage.Packages.Fusion)
@@ -23,21 +24,18 @@ local Types = script.Parent.Parent.Parent.types
 local Roblox = require(Types.Roblox)
 type Object = Roblox.GuiObject
 
+local Theme = require(Types.Parent.Theme)
+
 -- Component | Types:
-export type Props = Object & {}
+export type Props = Object & {
+	Color: UsedAs<Color3>?,
+}
 
-return function(scope: Scope, props: Props): Instance
-	scope = scope:innerScope()
-	local currentTime = scope:Value(os.clock())
+return function(scope: Scope, props: Props): GuiObject
+	scope = scope:innerScope() :: Scope
+	local theme = Theme.Contextual:now()
 
-	table.insert(
-		scope,
-		RunService.PreRender:Connect(function()
-			currentTime:set(os.clock())
-		end)
-	)
-
-	return scope:New "ImageLabel" {
+	local instance = scope:New "ImageLabel" {
 		Parent = props.Parent,
 
 		ZIndex = props.ZIndex,
@@ -47,12 +45,14 @@ return function(scope: Scope, props: Props): Instance
 		Position = props.Position,
 		Size = props.Size,
 
-		Image = "rbxassetid://6675230773",
+		Image = DEFAULT_IMAGE,
+		ImageColor3 = props.Color or theme.Accent,
 		BackgroundTransparency = 1,
+	} :: GuiObject
 
-		Rotation = scope:Computed(function(use)
-			local time = use(currentTime)
-			return (time * SPIN_DEGREES_PER_SECOND) % 360
-		end),
-	} :: Instance
+	scope:insert(RunService.PreRender:Connect(function()
+		instance.Rotation = (os.clock() * SPIN_DEGREES_PER_SECOND) % 360
+	end))
+
+	return instance
 end
