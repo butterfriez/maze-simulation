@@ -2,8 +2,6 @@
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local UILabs = require(ReplicatedStorage.Packages.UILabs)
-
 local Fusion = require(ReplicatedStorage.Packages.Fusion)
 type Fusion = typeof(Fusion)
 type Scope<T = Fusion> = Fusion.Scope<T>
@@ -46,43 +44,52 @@ for _, enum in Enum.ScaleType:GetEnumItems() do
 	SCALE_TYPE_LIST[enum.Name] = enum
 end
 
-local TEXTURE_CONTROLS = {
-	["Texture: Asset"] = "",
-	["Texture: Color"] = Color3.new(1, 1, 1),
-	["Texture: Transparency"] = UILabs.Slider(0, 0, 1),
-	["Texture: ScaleType"] = UILabs.EnumList(SCALE_TYPE_LIST, "Stretch"),
-}
-export type Controls = typeof(TEXTURE_CONTROLS)
+local Texture = {}
+Texture.Empty = EMPTY_TEXTURE
 
-return table.freeze {
-	Empty = EMPTY_TEXTURE,
-	Story = table.freeze {
-		Controls = TEXTURE_CONTROLS,
-		Properties = function(scope: Scope, controls: { [string]: any } & Controls): Texture
-			return {
-				Asset = controls["Texture: Asset"],
-				Color = controls["Texture: Color"],
-				Transparency = controls["Texture: Transparency"],
-				ScaleType = controls["Texture: ScaleType"],
-			}
-		end,
-	},
+Texture.Resolve = function(texture: Texture?): (Texture, "Frame" | "ImageLabel")
+	if texture then
+		return texture, "ImageLabel"
+	else
+		return EMPTY_TEXTURE, "Frame"
+	end
+end
 
-	Resolve = function(texture: Texture?): (Texture, "Frame" | "ImageLabel")
-		if texture then
-			return texture, "ImageLabel"
-		else
-			return EMPTY_TEXTURE, "Frame"
-		end
-	end,
+-- TODO: Replace this with some Sift method!
+Texture.Apply = function<T>(texture: Texture, props: T): T
+	if texture == EMPTY_TEXTURE then return props end
+	for a, b in TEXTURE_MAP :: any do
+		if (props :: any)[a] then continue end
+		(props :: any)[a] = (texture :: any)[b]
+	end
+	return props
+end
 
-	-- TODO: Replace this with some Sift method!
-	Apply = function<T>(texture: Texture, props: T): T
-		if texture == EMPTY_TEXTURE then return props end
-		for a, b in TEXTURE_MAP :: any do
-			if (props :: any)[a] then continue end
-			(props :: any)[a] = (texture :: any)[b]
-		end
-		return props
-	end,
-}
+do -- Only populate story-related content if UILabs is found:
+	local module = ReplicatedStorage.Packages:FindFirstChild("UILabs")
+	if module then
+		local UILabs = require(module)
+
+		local TEXTURE_CONTROLS = {
+			["Texture: Asset"] = "",
+			["Texture: Color"] = Color3.new(1, 1, 1),
+			["Texture: Transparency"] = UILabs.Slider(0, 0, 1),
+			["Texture: ScaleType"] = UILabs.EnumList(SCALE_TYPE_LIST, "Stretch"),
+		}
+		type Controls = typeof(TEXTURE_CONTROLS)
+
+		Texture.Story = table.freeze {
+			Controls = TEXTURE_CONTROLS,
+			Properties = function(scope: Scope, controls: { [string]: any } & Controls): Texture
+				return {
+					Asset = controls["Texture: Asset"],
+					Color = controls["Texture: Color"],
+					Transparency = controls["Texture: Transparency"],
+					ScaleType = controls["Texture: ScaleType"],
+				}
+			end,
+		}
+	end
+end
+
+return table.freeze(Texture)
