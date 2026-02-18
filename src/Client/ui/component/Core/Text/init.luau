@@ -5,6 +5,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 -- Constants:
 local DEFAULT_COLOR: Color3 = Color3.new()
+local UI = script.Parent.Parent.Parent
 
 -- Fusion | Definitions:
 local Fusion = require(ReplicatedStorage.Packages.Fusion)
@@ -18,16 +19,13 @@ type Value<T> = Fusion.Value<T>
 type Child = Fusion.Child
 
 -- Interface Types:
-local Types = script.Parent.Parent.Parent.types
+local Roblox = require(UI.types.Roblox)
 
-local Roblox = require(Types.Roblox)
-type Object = Roblox.GuiObject
-
-local Shadow = require(Types.Shadow)
+local Shadow = require(UI.types.Shadow)
 type Shadow = Shadow.Shadow
 
 -- Component | Types:
-type Props = Object & {
+export type Props = Roblox.GuiObject & {
 	__ref: Value<GuiObject>?,
 	__interactable: boolean?,
 

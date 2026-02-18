@@ -2,6 +2,8 @@
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
+local UI = script.Parent.Parent
+
 local Fusion = require(ReplicatedStorage.Packages.Fusion)
 type Fusion = typeof(Fusion)
 type Scope<T = Fusion> = Fusion.Scope<T>
@@ -65,31 +67,29 @@ Texture.Apply = function<T>(texture: Texture, props: T): T
 	return props
 end
 
-do -- Only populate story-related content if UILabs is found:
-	local module = ReplicatedStorage.Packages:FindFirstChild("UILabs")
-	if module then
-		local UILabs = require(module)
+local Story = require(UI.Story)
+if Story.Available then
+	local UILabs = require(ReplicatedStorage.Packages.UILabs)
 
-		local TEXTURE_CONTROLS = {
-			["Texture: Asset"] = "",
-			["Texture: Color"] = Color3.new(1, 1, 1),
-			["Texture: Transparency"] = UILabs.Slider(0, 0, 1),
-			["Texture: ScaleType"] = UILabs.EnumList(SCALE_TYPE_LIST, "Stretch"),
-		}
-		type Controls = typeof(TEXTURE_CONTROLS)
+	local TEXTURE_CONTROLS = {
+		["Texture: Asset"] = "",
+		["Texture: Color"] = Color3.new(1, 1, 1),
+		["Texture: Transparency"] = UILabs.Slider(0, 0, 1),
+		["Texture: ScaleType"] = UILabs.EnumList(SCALE_TYPE_LIST, "Stretch"),
+	}
+	type Controls = typeof(TEXTURE_CONTROLS)
 
-		Texture.Story = table.freeze {
-			Controls = TEXTURE_CONTROLS,
-			Properties = function(scope: Scope, controls: { [string]: any } & Controls): Texture
-				return {
-					Asset = controls["Texture: Asset"],
-					Color = controls["Texture: Color"],
-					Transparency = controls["Texture: Transparency"],
-					ScaleType = controls["Texture: ScaleType"],
-				}
-			end,
-		}
-	end
+	Texture.Story = table.freeze {
+		Controls = TEXTURE_CONTROLS,
+		Properties = function(scope: Scope, controls: { [string]: any } & Controls): Texture
+			return {
+				Asset = controls["Texture: Asset"],
+				Color = controls["Texture: Color"],
+				Transparency = controls["Texture: Transparency"],
+				ScaleType = controls["Texture: ScaleType"],
+			}
+		end,
+	}
 end
 
 return table.freeze(Texture)

@@ -3,18 +3,20 @@
 -- Services:
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
+local UI = script.Parent
+
 -- Fusion:
 local Fusion = require(ReplicatedStorage.Packages.Fusion)
 local scope = Fusion:scoped()
-local peek = Fusion.peek
+local peek = Fusion.peek :: any
 
 type Fusion = typeof(Fusion)
 type Scope<T = Fusion> = Fusion.Scope<T>
 type StateObject<T> = Fusion.StateObject<T>
 
-local PlayerState = require(script.Parent.state.PlayerState)
+local PlayerState = require(UI.state.PlayerState)
 
-local ThemeContainer = script.Parent.themes
+local ThemeContainer = UI.themes
 local types = require(ThemeContainer.types)
 export type Theme = types.Theme
 
@@ -43,30 +45,31 @@ end
 
 Theme.Contextual = Fusion.Contextual(dynamic :: Theme)
 
-do
-	local module = ReplicatedStorage.Packages:FindFirstChild("UILabs")
-	if module then
-		local UILabs = require(module)
-		Theme.Story = table.freeze {
-			Control = UILabs.EnumList(Theme.List :: any, DEFAULT_THEME_NAME),
-			Apply = function(scope: Scope, theme: StateObject<Theme>, func: (scope: Scope) -> ())
-				local tempScope: Scope? = nil
-				scope:Observer(theme):onBind(function()
-					local current = peek(theme)
+local Story = require(UI.Story)
+if Story.Available then
+	local UILabs = require(ReplicatedStorage.Packages.UILabs)
 
-					if tempScope then
-						tempScope:doCleanup()
-						tempScope = nil
-					end
+	local apply = function(scope: Scope, theme: StateObject<Theme>, func: (scope: Scope) -> ())
+		local tempScope: Scope? = nil
+		scope:Observer(theme):onBind(function()
+			local current = peek(theme)
 
-					Theme.Contextual:is(current):during(function()
-						tempScope = scope:innerScope() :: Scope
-						func(tempScope)
-					end :: any)
-				end)
-			end,
-		}
+			if tempScope then
+				tempScope:doCleanup()
+				tempScope = nil
+			end
+
+			Theme.Contextual:is(current):during(function()
+				tempScope = scope:innerScope() :: Scope
+				func(tempScope)
+			end :: any)
+		end)
 	end
+
+	Theme.Story = table.freeze {
+		Control = UILabs.EnumList(Theme.List :: any, DEFAULT_THEME_NAME),
+		Apply = apply,
+	}
 end
 
 return Theme

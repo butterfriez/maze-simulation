@@ -2,22 +2,16 @@
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
+local UI = script.Parent.Parent.Parent.Parent
+
 local UILabs = require(ReplicatedStorage.Packages.UILabs)
 
-local Sift = require(ReplicatedStorage.Packages.Sift)
-local Dictionary = Sift.Dictionary
+local Story = require(UI.Story)
 
-local Fusion = require(ReplicatedStorage.Packages.Fusion)
-local Children = Fusion.Children
-
-type Fusion = typeof(Fusion)
-type Scope<T = Fusion> = Fusion.Scope<T>
+local Shadow = require(UI.types.Shadow)
+local Texture = require(UI.types.Texture)
 
 local Component = require(script.Parent)
-
-local Types = script.Parent.Parent.Parent.Parent.types
-local Shadow = require(Types.Shadow)
-local Texture = require(Types.Texture)
 
 local STORY_CONTROLS = {
 	Corners = UILabs.Slider(0, 0, 1),
@@ -27,16 +21,15 @@ local STORY_CONTROLS = {
 }
 type Controls = typeof(STORY_CONTROLS) & typeof(Shadow.Story.Controls) & typeof(Texture.Story.Controls)
 
-return UILabs.CreateFusionStory({
-	fusion = Fusion,
-	controls = Dictionary.join(Shadow.Story.Controls, Texture.Story.Controls, STORY_CONTROLS) :: any,
-}, function(props)
-	local scope = props.scope :: Scope
-	local controls = props.controls :: Controls
+return Story.Build(function(props: Story.Props<Controls>)
+	local scope = props.scope
+	local controls = props.controls
+
+	local Children = scope.Children
 
 	local shadow = Shadow.Story.Properties(scope, controls)
 	local texture = Texture.Story.Properties(scope, controls)
-	local corners = scope:Computed(function(use: any, scope: Scope)
+	local corners = scope:Computed(function(use: any, scope: typeof(scope))
 		return UDim.new(use(controls.Corners))
 	end)
 	local scale = scope:Computed(function(use: any)
@@ -72,7 +65,7 @@ return UILabs.CreateFusionStory({
 				Shadow = shadow,
 				Texture = texture,
 				Corners = corners,
-				Scale = scale,
+				Scale = scale :: any,
 
 				[Children] = scope:New "TextLabel" {
 					Size = UDim2.fromScale(1, 1),
@@ -89,7 +82,7 @@ return UILabs.CreateFusionStory({
 
 				Texture = texture,
 				Corners = corners,
-				Scale = scale,
+				Scale = scale :: any,
 
 				[Children] = scope:New "TextLabel" {
 					Size = UDim2.fromScale(1, 1),
@@ -106,7 +99,7 @@ return UILabs.CreateFusionStory({
 
 				Shadow = shadow,
 				Corners = corners,
-				Scale = scale,
+				Scale = scale :: any,
 
 				[Children] = scope:New "TextLabel" {
 					Size = UDim2.fromScale(1, 1),
@@ -120,7 +113,7 @@ return UILabs.CreateFusionStory({
 
 				Color = controls.Color,
 				Transparency = controls.Transparency :: any,
-				Scale = scale,
+				Scale = scale :: any,
 
 				Corners = corners,
 
@@ -134,4 +127,4 @@ return UILabs.CreateFusionStory({
 	}
 
 	return nil
-end)
+end, Story.Controls(Shadow.Story.Controls, Texture.Story.Controls, STORY_CONTROLS))

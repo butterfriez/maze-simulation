@@ -3,30 +3,25 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local CONSTANTS = require(ReplicatedStorage.core.CONSTANTS)
-local UILabs = require(ReplicatedStorage.Packages.UILabs)
 
-local Fusion = require(ReplicatedStorage.Packages.Fusion)
-type Fusion = typeof(Fusion)
-type Scope<T = Fusion> = Fusion.Scope<T>
+local UI = script.Parent.Parent.Parent
+local Story = require(UI.Story)
+local Theme = require(UI.Theme)
 
-local Replay = require(script.Parent)
-local Theme = require(script.Parent.Parent.Parent.Theme)
+local View = require(script.Parent)
 
 local STORY_CONTROLS = {
 	Theme = Theme.Story.Control,
 }
 type Controls = typeof(STORY_CONTROLS)
 
-return UILabs.CreateFusionStory({
-	fusion = Fusion,
-	controls = STORY_CONTROLS,
-}, function(props)
-	local scope = props.scope :: Scope
+return Story.Build(function(props: Story.Props<Controls>)
+	local scope = props.scope
 	local controls = props.controls
 
-	Theme.Story.Apply(scope, controls.Theme, function(scope)
-		Replay(scope, { Parent = props.target, Player = CONSTANTS.USER_NAME })
+	Theme.Story.Apply(scope, controls.Theme :: any, function(scope)
+		View(scope, { Parent = props.target, Player = CONSTANTS.USER_NAME })
 	end)
 
 	return nil
-end)
+end, Story.Controls(STORY_CONTROLS))

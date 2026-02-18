@@ -2,6 +2,7 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local DEFAULT_SHADOW_RATIO: number = 0.25
+local UI = script.Parent.Parent
 
 local Fusion = require(ReplicatedStorage.Packages.Fusion)
 type Fusion = typeof(Fusion)
@@ -34,33 +35,31 @@ Shadow.Position = function(scope: Scope, shadow: Shadow, position: UsedAs<UDim2>
 	end)
 end
 
-do -- Only populate story-related content if UILabs is found:
-	local module = ReplicatedStorage.Packages:FindFirstChild("UILabs")
-	if module then
-		local UILabs = require(module)
+local Story = require(UI.Story)
+if Story.Available then
+	local UILabs = require(ReplicatedStorage.Packages.UILabs)
 
-		local SHADOW_CONTROLS = {
-			["Shadow: Offset (X)"] = UILabs.Slider(-5, -100, 100),
-			["Shadow: Offset (Y)"] = UILabs.Slider(-5, -100, 100),
-			["Shadow: Ratio"] = UILabs.Slider(0.5, 0, 1),
-			["Shadow: Transparency"] = UILabs.Slider(0, 0, 1),
-		}
-		type Controls = typeof(SHADOW_CONTROLS)
+	local SHADOW_CONTROLS = {
+		["Shadow: Offset (X)"] = UILabs.Slider(-5, -100, 100),
+		["Shadow: Offset (Y)"] = UILabs.Slider(-5, -100, 100),
+		["Shadow: Ratio"] = UILabs.Slider(0.5, 0, 1),
+		["Shadow: Transparency"] = UILabs.Slider(0, 0, 1),
+	}
+	type Controls = typeof(SHADOW_CONTROLS)
 
-		Shadow.Story = table.freeze {
-			Controls = SHADOW_CONTROLS,
-			Properties = function(scope: Scope, controls: { [string]: any } & Controls): Shadow
-				local offset = scope:Computed(function(use: any, scope: Scope)
-					return UDim2.fromOffset(use(controls["Shadow: Offset (X)"]), use(controls["Shadow: Offset (Y)"]))
-				end)
-				return {
-					Offset = offset,
-					Ratio = controls["Shadow: Ratio"],
-					Transparency = controls["Shadow: Transparency"],
-				}
-			end,
-		}
-	end
+	Shadow.Story = table.freeze {
+		Controls = SHADOW_CONTROLS,
+		Properties = function(scope: Scope, controls: { [string]: any } & Controls): Shadow
+			local offset = scope:Computed(function(use: any, scope: Scope)
+				return UDim2.fromOffset(use(controls["Shadow: Offset (X)"]), use(controls["Shadow: Offset (Y)"]))
+			end)
+			return {
+				Offset = offset,
+				Ratio = controls["Shadow: Ratio"],
+				Transparency = controls["Shadow: Transparency"],
+			}
+		end,
+	}
 end
 
 return table.freeze(Shadow)

@@ -1,14 +1,11 @@
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Fusion = require(ReplicatedStorage.Packages.Fusion)
-local UILabs = require(ReplicatedStorage.Packages.UILabs)
+--!strict
 
-local HUDView = require(script.Parent)
+local UI = script.Parent.Parent.Parent
+local Story = require(UI.Story)
 
-return UILabs.CreateFusionStory({
-	fusion = Fusion,
-}, function(props)
-	HUDView(props.scope, {
-		Parent = props.target,
-	})
+local View = require(script.Parent)
+
+return Story.Build(function(props)
+	View(props.scope, { Parent = props.target })
 	return nil
 end)

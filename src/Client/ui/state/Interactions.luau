@@ -8,18 +8,16 @@ local MOUSE_ICONS = {
 	Cursor = "rbxassetid://7153417119",
 	Pointer = "rbxassetid://7033235466",
 }
+local UI = script.Parent.Parent
 
-local Plugin: Plugin? = nil
-do -- Retrieve the plugin global for interactions in UI stories:
-	local module = ReplicatedStorage.Packages:FindFirstChild("UILabs")
-	if module then
-		local UILabs = require(module)
-		Plugin = UILabs.Environment.Plugin
-	end
+local Plugin: Plugin?, Story = nil, require(UI.Story)
+if Story.Available then
+	local UILabs = require(ReplicatedStorage.Packages.UILabs)
+	Plugin = UILabs.Environment.Plugin
 end
 
 local Fusion = require(ReplicatedStorage.Packages.Fusion)
-local peek = Fusion.peek
+local peek = Fusion.peek :: any
 
 local Interactions = {}
 

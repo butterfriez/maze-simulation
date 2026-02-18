@@ -4,17 +4,13 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local UILabs = require(ReplicatedStorage.Packages.UILabs)
 
-local Sift = require(ReplicatedStorage.Packages.Sift)
-local Dictionary = Sift.Dictionary
+local UI = script.Parent.Parent.Parent.Parent
 
-local Fusion = require(ReplicatedStorage.Packages.Fusion)
-local Children = Fusion.Children
+local Story = require(UI.Story)
 
-type Fusion = typeof(Fusion)
-type Scope<T = Fusion> = Fusion.Scope
+local Shadow = require(UI.types.Shadow)
 
 local Component = require(script.Parent)
-local Shadow = require(script.Parent.Parent.Parent.Parent.types.Shadow)
 
 local STORY_CONTROLS = {
 	-- Text Controls:
@@ -34,12 +30,11 @@ local STORY_CONTROLS = {
 }
 type Controls = typeof(STORY_CONTROLS) & typeof(Shadow.Story.Controls)
 
-return UILabs.CreateFusionStory({
-	fusion = Fusion,
-	controls = Dictionary.join(Shadow.Story.Controls, STORY_CONTROLS) :: any,
-}, function(props)
-	local scope = props.scope :: Scope
-	local controls = props.controls :: Controls
+return Story.Build(function(props: Story.Props<Controls>)
+	local scope = props.scope
+	local controls = props.controls
+
+	local Children = scope.Children
 
 	local shadow = Shadow.Story.Properties(scope, controls)
 
@@ -93,4 +88,4 @@ return UILabs.CreateFusionStory({
 	}
 
 	return nil
-end)
+end, Story.Controls(Shadow.Story.Controls, STORY_CONTROLS))
