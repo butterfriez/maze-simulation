@@ -40,4 +40,4 @@ return Story.Build(function(props: Story.Props<Controls>)
 			Hovered = controls.Hovered,
 		})
 	end)
-end, Story.Controls(STORY_CONTROLS))
+end, STORY_CONTROLS)

@@ -8,7 +8,7 @@ local Fusion = require(ReplicatedStorage.Packages.Fusion)
 type Fusion = typeof(Fusion)
 type Scope<T = Fusion> = Fusion.Scope<T>
 
-type Controls = { [string]: any }
+type Controls = { [any]: any }
 export type Props<T = Controls> = {
 	scope: Scope,
 	target: GuiObject,

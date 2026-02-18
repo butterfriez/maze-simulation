@@ -22,10 +22,10 @@ return Story.Build(function(props: Story.Props<Controls>)
 	local Children = scope.Children
 
 	local shadow = Shadow.Story.Properties(scope, controls)
+
 	local corners = scope:Computed(function(use: any, scope: typeof(scope))
 		return UDim.new(use(controls.Corners))
 	end)
-
 	local function onActivate()
 		print("Pressed!")
 	end

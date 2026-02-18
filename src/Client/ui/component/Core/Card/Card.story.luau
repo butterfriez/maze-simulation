@@ -29,6 +29,7 @@ return Story.Build(function(props: Story.Props<Controls>)
 
 	local shadow = Shadow.Story.Properties(scope, controls)
 	local texture = Texture.Story.Properties(scope, controls)
+
 	local corners = scope:Computed(function(use: any, scope: typeof(scope))
 		return UDim.new(use(controls.Corners))
 	end)

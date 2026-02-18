@@ -3,9 +3,7 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local UILabs = require(ReplicatedStorage.Packages.UILabs)
-
 local UI = script.Parent.Parent.Parent.Parent
-
 local Story = require(UI.Story)
 
 local Shadow = require(UI.types.Shadow)
@@ -13,7 +11,6 @@ local Shadow = require(UI.types.Shadow)
 local Component = require(script.Parent)
 
 local STORY_CONTROLS = {
-	-- Text Controls:
 	Text = "Hello World!",
 	TextScaled = true,
 	Font = UILabs.EnumList({

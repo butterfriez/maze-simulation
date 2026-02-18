@@ -13,6 +13,7 @@ local peek = Fusion.peek :: any
 type Fusion = typeof(Fusion)
 type Scope<T = Fusion> = Fusion.Scope<T>
 type StateObject<T> = Fusion.StateObject<T>
+type UsedAs<T> = Fusion.UsedAs<T>
 
 local PlayerState = require(UI.state.PlayerState)
 
@@ -67,7 +68,7 @@ if Story.Available then
 	end
 
 	Theme.Story = table.freeze {
-		Control = UILabs.EnumList(Theme.List :: any, DEFAULT_THEME_NAME),
+		Control = UILabs.EnumList(Theme.List :: any, DEFAULT_THEME_NAME) :: UsedAs<Theme>,
 		Apply = apply,
 	}
 end

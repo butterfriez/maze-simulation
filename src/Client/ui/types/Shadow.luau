@@ -39,24 +39,37 @@ local Story = require(UI.Story)
 if Story.Available then
 	local UILabs = require(ReplicatedStorage.Packages.UILabs)
 
+	local IDENTIFIER = "#Shadow" :: "#Shadow"
 	local SHADOW_CONTROLS = {
-		["Shadow: Offset (X)"] = UILabs.Slider(-5, -100, 100),
-		["Shadow: Offset (Y)"] = UILabs.Slider(-5, -100, 100),
-		["Shadow: Ratio"] = UILabs.Slider(0.5, 0, 1),
-		["Shadow: Transparency"] = UILabs.Slider(0, 0, 1),
+		["Offset (X)"] = UILabs.Slider(-5, -100, 100) :: UsedAs<number>,
+		["Offset (Y)"] = UILabs.Slider(-5, -100, 100) :: UsedAs<number>,
+		["Ratio"] = UILabs.Slider(0.5, 0, 1) :: UsedAs<number>,
+		["Transparency"] = UILabs.Slider(0, 0, 1) :: UsedAs<number>,
 	}
-	type Controls = typeof(SHADOW_CONTROLS)
+
+	type _Controls = typeof(SHADOW_CONTROLS)
+	type Controls = { [typeof(IDENTIFIER)]: _Controls & { Controls: any } }
+
+	local function construct(overwrite: ((_Controls) -> ())?): Controls
+		if overwrite then overwrite(SHADOW_CONTROLS) end
+		return { [IDENTIFIER] = UILabs.ControlGroup(SHADOW_CONTROLS) :: any }
+	end
 
 	Shadow.Story = table.freeze {
-		Controls = SHADOW_CONTROLS,
+		Identifier = IDENTIFIER,
+
+		Construct = construct,
+		Controls = construct(),
+
 		Properties = function(scope: Scope, controls: { [string]: any } & Controls): Shadow
+			local shadow = controls[IDENTIFIER]
 			local offset = scope:Computed(function(use: any, scope: Scope)
-				return UDim2.fromOffset(use(controls["Shadow: Offset (X)"]), use(controls["Shadow: Offset (Y)"]))
+				return UDim2.fromOffset(use(shadow["Offset (X)"]), use(shadow["Offset (Y)"]))
 			end)
 			return {
 				Offset = offset,
-				Ratio = controls["Shadow: Ratio"],
-				Transparency = controls["Shadow: Transparency"],
+				Ratio = shadow.Ratio,
+				Transparency = shadow.Transparency,
 			}
 		end,
 	}

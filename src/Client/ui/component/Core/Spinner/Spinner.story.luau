@@ -50,4 +50,4 @@ return Story.Build(function(props: Story.Props<Controls>)
 	})
 
 	return nil
-end, Story.Controls(STORY_CONTROLS))
+end, STORY_CONTROLS)
